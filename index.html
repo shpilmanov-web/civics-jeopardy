@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>ג'פרדי אזרחות</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
+    body { background-color: #060b26; color: #fff; text-align: center; display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
+
+    /* מסך פתיחה (Lobby) */
+    #startScreen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 30px 20px; background: radial-gradient(circle at center, #101c5d 0%, #060b26 100%); }
+    .lobby-card { background: #0c184d; border: 3px solid #f5b324; border-radius: 12px; max-width: 900px; width: 100%; padding: 30px; box-shadow: 0 0 35px rgba(245, 179, 36, 0.25); }
+    .lobby-title { font-size: 2.2rem; color: #f5b324; text-shadow: 2px 2px 4px #000; margin-bottom: 25px; }
+    
+    .setup-group { margin-bottom: 25px; text-align: right; }
+    .setup-label { font-size: 1.1rem; color: #9bb0ff; font-weight: bold; margin-bottom: 10px; display: block; }
+    .team-selector { display: flex; gap: 10px; flex-wrap: wrap; }
+    .team-btn, .size-btn { flex: 1; min-width: 60px; padding: 10px 15px; background: #16246f; border: 2px solid #33469e; color: #fff; font-size: 1.1rem; font-weight: bold; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+    .team-btn:hover, .size-btn:hover { background: #233588; border-color: #f5b324; }
+    .team-btn.active, .size-btn.active { background: #f5b324; color: #060b26; border-color: #fff; }
+
+    /* כרטיסי נושאים */
+    .topics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-top: 10px; }
+    .topic-card { background: #0e1e75; border: 3px solid #f5b324; border-radius: 8px; padding: 25px 15px; color: #f5b324; font-size: 1.25rem; font-weight: bold; cursor: pointer; text-shadow: 1px 1px 2px #000; transition: transform 0.15s, background 0.2s, box-shadow 0.2s; display: flex; align-items: center; justify-content: center; min-height: 110px; }
+    .topic-card:hover { background: #1b2da8; transform: translateY(-3px) scale(1.02); box-shadow: 0 8px 20px rgba(245, 179, 36, 0.3); color: #fff; }
+
+    /* מסך המשחק */
+    #gameScreen { display: none; flex-direction: column; min-height: 100vh; }
+    header { background: #0b1340; padding: 10px 20px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; border-bottom: 2px solid #233588; gap: 10px; }
+    .title-area h1 { font-size: 1.3rem; color: #f5b324; text-shadow: 1px 1px 2px #000; }
+    .current-topic-badge { background: #16246f; padding: 4px 10px; border-radius: 4px; border: 1px solid #4a5db5; font-size: 0.95rem; color: #cbd5e1; }
+    .controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    button { padding: 6px 12px; font-size: 0.95rem; border-radius: 4px; border: 1px solid #4a5db5; background: #16246f; color: #fff; cursor: pointer; }
+    button:hover { background: #233588; }
+    .btn-admin { background: #4338ca; border-color: #6366f1; display: none; } /* מוסתר כברירת מחדל */
+    .btn-home { background: #0284c7; border-color: #38bdf8; }
+
+    main { flex: 1; padding: 15px; display: flex; justify-content: center; align-items: center; }
+    #board { display: grid; gap: 8px; width: 100%; max-width: 1150px; }
+
+    .cell { background: #0e1e75; border: 2px solid #000; display: flex; justify-content: center; align-items: center; min-height: 75px; border-radius: 4px; text-align: center; padding: 6px; }
+    .cat-cell { background: #08124d; font-weight: bold; font-size: 1.05rem; color: #ffffff; border-color: #f5b324; word-break: break-word; }
+    .clue-cell { color: #f5b324; font-size: 1.6rem; font-weight: bold; cursor: pointer; transition: transform 0.1s, background 0.15s; }
+    .clue-cell:hover:not(.used) { background: #1a2da3; transform: scale(1.02); }
+    .clue-cell.used { background: #080d28; color: transparent; cursor: default; border-color: #141a3d; }
+
+    /* חלון מודאל לשאלה */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.88); z-index: 100; justify-content: center; align-items: center; padding: 20px; }
+    .modal-box { background: #0c1a66; border: 4px solid #f5b324; border-radius: 8px; max-width: 850px; width: 100%; padding: 25px; box-shadow: 0 0 30px rgba(245, 179, 36, 0.35); text-align: center; display: flex; flex-direction: column; gap: 15px; }
+    .modal-daily { display: none; color: #ff453a; font-size: 1.8rem; font-weight: 800; }
+    .modal-cat { color: #9bb0ff; font-size: 1.15rem; }
+    .modal-points { color: #f5b324; font-size: 1.6rem; font-weight: bold; }
+    .modal-clue { font-size: 1.5rem; line-height: 1.5; min-height: 100px; display: flex; align-items: center; justify-content: center; padding: 10px; }
+    .modal-ans { display: none; font-size: 1.45rem; color: #4eff82; padding: 12px; border-top: 1px dashed #4a5db5; background: rgba(0, 0, 0, 0.25); border-radius: 4px; }
+    .modal-actions { display: flex; justify-content: center; gap: 12px; margin-top: 10px; flex-wrap: wrap; }
+    .btn-show { background: #d97706; }
+    .btn-close { background: #4b5563; }
+
+    /* חלון ניהול נושאים */
+    #adminModal textarea { width: 100%; height: 220px; direction: ltr; text-align: left; font-family: monospace; padding: 10px; background: #050a22; color: #38bdf8; border: 1px solid #3b82f6; border-radius: 4px; font-size: 0.9rem; }
+    .status-msg { font-size: 0.9rem; min-height: 20px; margin-top: 5px; }
+
+    /* לוח תוצאות תחתון */
+    footer { background: #080d28; border-top: 2px solid #233588; padding: 10px 15px; display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap; }
+    .team-card { background: #111a4f; border: 1px solid #33469e; border-radius: 6px; padding: 6px 14px; min-width: 130px; text-align: center; }
+    .team-name { font-size: 0.9rem; color: #cbd5e1; }
+    .team-score { font-size: 1.35rem; font-weight: bold; color: #f5b324; margin: 2px 0; }
+    .score-btns { display: flex; gap: 5px; justify-content: center; }
+    .score-btns button { padding: 2px 6px; font-size: 0.8rem; }
+  </style>
+</head>
+<body>
+
+  <!-- מסך פתיחה ולוגין משחק -->
+  <div id="startScreen">
+    <div class="lobby-card">
+      <div class="lobby-title">ג'פרדי אזרחות</div>
+      
+      <div class="setup-group">
+        <span class="setup-label">1. בחר מספר משתתפים / קבוצות:</span>
+        <div class="team-selector" id="teamSelector">
+          <button class="team-btn" onclick="selectTeamCount(1)">1 (תרגול אישי)</button>
+          <button class="team-btn" onclick="selectTeamCount(2)">2</button>
+          <button class="team-btn active" onclick="selectTeamCount(3)">3</button>
+          <button class="team-btn" onclick="selectTeamCount(4)">4</button>
+          <button class="team-btn" onclick="selectTeamCount(5)">5</button>
+          <button class="team-btn" onclick="selectTeamCount(6)">6</button>
+        </div>
+      </div>
+
+      <div class="setup-group">
+        <span class="setup-label">2. בחר גודל לוח:</span>
+        <div class="team-selector" id="sizeSelector">
+          <button class="size-btn" onclick="selectBoardSize('4x4')">מהיר (4×4)</button>
+          <button class="size-btn" onclick="selectBoardSize('5x4')">בינוני (5×4)</button>
+          <button class="size-btn active" onclick="selectBoardSize('6x5')">מלא (6×5)</button>
+        </div>
+      </div>
+
+      <div class="setup-group">
+        <span class="setup-label">3. בחר נושא להתחלת המשחק:</span>
+        <div class="topics-grid" id="topicsContainer"></div>
+      </div>
+
+      <div id="lobbyAdminArea" style="margin-top: 25px; display: flex; justify-content: flex-end;">
+        <button class="btn-admin" onclick="openAdmin()" style="padding: 8px 16px;">ניהול והוספת נושאים</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- מסך המשחק -->
+  <div id="gameScreen">
+    <header>
+      <div class="title-area" style="display: flex; align-items: center; gap: 10px;">
+        <button class="btn-home" onclick="goToLobby()">⌂ למסך הראשי</button>
+        <h1>ג'פרדי אזרחות</h1>
+        <span class="current-topic-badge" id="currentTopicBadge"></span>
+      </div>
+      <div class="controls">
+        <button onclick="resetBoardAndScore()">איפוס לוח וניקוד</button>
+        <button class="btn-admin" onclick="openAdmin()">ניהול נושאים</button>
+        <button onclick="toggleAudio()" id="audioBtn">צליל: פעיל</button>
+      </div>
+    </header>
+
+    <main>
+      <div id="board"></div>
+    </main>
+
+    <footer id="scoreboard"></footer>
+  </div>
+
+  <!-- מודאל שאלה -->
+  <div id="modal" class="modal-overlay">
+    <div class="modal-box">
+      <div id="modalDaily" class="modal-daily">★ DAILY DOUBLE! ★</div>
+      <div class="modal-cat" id="modalCat"></div>
+      <div class="modal-points" id="modalPoints"></div>
+      <div class="modal-clue" id="modalClue"></div>
+      <div class="modal-ans" id="modalAns"></div>
+      <div class="modal-actions">
+        <button class="btn-show" id="showAnsBtn" onclick="revealAnswer()">הצג תשובה (רווח)</button>
+        <button class="btn-close" onclick="closeModal()">חזור ללוח (Esc)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- מודאל ניהול נושאים -->
+  <div id="adminModal" class="modal-overlay">
+    <div class="modal-box" style="max-width: 650px; text-align: right;">
+      <h2 style="color: #38bdf8; font-size: 1.3rem;">טעינת נושא חדש מ-Google AI Studio</h2>
+      <p style="font-size: 0.95rem; color: #cbd5e1;">הדבק כאן את קוד ה-JSON ולחץ שמירה:</p>
+      <textarea id="jsonInput" placeholder='{"topic": "...", "categories": [...]}'></textarea>
+      <div id="statusMsg" class="status-msg"></div>
+      <div style="display:flex; justify-content: flex-end; gap: 10px; margin-top: 10px;">
+        <button onclick="saveNewTopic()" style="background:#0284c7;">שמור נושא</button>
+        <button class="btn-close" onclick="closeAdmin()">סגור</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const DEFAULT_TOPIC = {
+      topic: "יסודות הדמוקרטיה ושלטון החוק",
+      categories: [
+        {
+          name: "זכויות יסוד",
+          clues: [
+            { points: 100, clue: "זכות טבעית הקובעת כי אין לפגוע בגופו או בחייו של אדם.", answer: "מהי הזכות לחיים ולביטחון?", is_daily_double: false },
+            { points: 200, clue: "זכותו של אדם להחזיק ברכוש פרטי מבלי שיילקח ממנו ללא הליך כדין.", answer: "מהי הזכות לקניין?", is_daily_double: false },
+            { points: 300, clue: "איסור חוקי על פרסום צילום אישי של אדם ללא הסכמתו מגן על זכות זו.", answer: "מהי הזכות לפרטיות?", is_daily_double: false },
+            { points: 400, clue: "מתן יחס שונה לבני אדם כאשר קיימת שונות רלוונטית ומוצדקת ביניהם.", answer: "מהי הבחנה מותרת?", is_daily_double: true },
+            { points: 500, clue: "העקרון הקובע כי אדם נחשב חף מפשע עד להוכחת אשמתו בבית משפט.", answer: "מהי חזקת החפות?", is_daily_double: false }
+          ]
+        },
+        {
+          name: "שלטון העם",
+          clues: [
+            { points: 100, clue: "הכלי המרכזי שבאמצעותו אזרחים בוחרים את נציגיהם בדמוקרטיה ייצוגית.", answer: "מהן בחירות דמוקרטיות?", is_daily_double: false },
+            { points: 200, clue: "שיטת ממשל שבה כלל האזרחים השתתפו ישירות בקבלת ההחלטות.", answer: "מהי דמוקרטיה ישירה?", is_daily_double: false },
+            { points: 300, clue: "תנאי לבחירות הקובע כי לכל אזרח קול אחד השווה במשקלו לקולות אחרים.", answer: "מהו עקרון השוויון בבחירות?", is_daily_double: false },
+            { points: 400, clue: "הבטחה חוקתית לכך שההנהגה מתחלפת במועדים קבועים למניעת ריכוז כוח.", answer: "מהו עקרון חילופי השלטון?", is_daily_double: false },
+            { points: 500, clue: "הליך הצבעה שבו מובאת שאלה ספציפית ומכרעת ישירות להכרעת כלל הציבור.", answer: "מהו משאל עם?", is_daily_double: false }
+          ]
+        },
+        {
+          name: "שלטון החוק",
+          clues: [
+            { points: 100, clue: "העיקרון הקובע כי כולם, אזרחים ורשויות השלטון כאחד, כפופים לחוק שנקבע כדין.", answer: "מהו שלטון החוק?", is_daily_double: false },
+            { points: 200, clue: "פקודה צבאית בלתי מוסרית באופן מובהק שחובה מוחלטת לסרב לה.", answer: "מהי פקודה בלתי חוקית בעליל?", is_daily_double: false },
+            { points: 300, clue: "עקרון המחייב רשות מנהלית לפעול אך ורק על פי סמכות שהוענקה לה במפורש בחוק.", answer: "מהו עקרון חוקיות הממשל?", is_daily_double: false },
+            { points: 400, clue: "הפרת חוק גלויה ממניעים אידאולוגיים תוך מוכנות לשאת בעונש כדי לעורר שיח.", answer: "מהו מרי אזרחי?", is_daily_double: false },
+            { points: 500, clue: "סוג עבריינות שבה איש ציבור מנצל סמכות שלטונית כדי להיטיב עם מקורביו בניגוד לחוק.", answer: "מהי עבריינות שלטונית?", is_daily_double: false }
+          ]
+        },
+        {
+          name: "הפרדת רשויות",
+          clues: [
+            { points: 100, clue: "הרשות שתפקידה העיקרי הוא חקיקת חוקים ופיקוח שוטף על הממשלה בישראל.", answer: "מהי הרשות המחוקקת (הכנסת)?", is_daily_double: false },
+            { points: 200, clue: "הרשות האחראית על קביעת מדיניות וביצוע ענייני המדינה השוטפים.", answer: "מהי הרשות המבצעת (הממשלה)?", is_daily_double: false },
+            { points: 300, clue: "מערכת מוסדית שבה כל רשות מרסנת ומאזנת את עוצמתן של הרשויות האחרות.", answer: "מהו מנגנון איזונים ובלמים?", is_daily_double: false },
+            { points: 400, clue: "סמכות שיפוטית לבחון האם החלטות של רשויות מנהל התקבלו בסבירות וללא חריגה מסמכות.", answer: "מהי ביקורת שיפוטית?", is_daily_double: false },
+            { points: 500, clue: "חוקים בעלי מעמד עליון המהווים את תשתית החוקה הנבנית בישראל.", answer: "מהם חוקי יסוד?", is_daily_double: false }
+          ]
+        },
+        {
+          name: "פלורליזם וסובלנות",
+          clues: [
+            { points: 100, clue: "הכרה בזכות הקיום של מגוון דעות, עמדות וקבוצות שונות במרחב הציבורי.", answer: "מהו פלורליזם?", is_daily_double: false },
+            { points: 200, clue: "נכונות לקבל את השונה ולהכיל דעות מעוררות מחלוקת ללא שימוש באלימות.", answer: "מהי סובלנות?", is_daily_double: false },
+            { points: 300, clue: "השגת הסכמה רחבה בין מגזרים על כללי המשחק והמסגרת המשותפת לקיום המדינה.", answer: "מהי הסכמיות?", is_daily_double: false },
+            { points: 400, clue: "זכויות המוענקות לקבוצות מיעוט במטרה לשמר את זהותן התרבותית, הדתית והלשונית.", answer: "מהן זכויות קבוצתיות?", is_daily_double: false },
+            { points: 500, clue: "הגבלת התארגנות פוליטית המבקשת לנצל כלים דמוקרטיים במטרה לבטל את הדמוקרטיה.", answer: "מהי דמוקרטיה מתגוננת?", is_daily_double: false }
+          ]
+        },
+        {
+          name: "סמלים ומדינה",
+          clues: [
+            { points: 100, clue: "המסמך ההיסטורי המכונן שנחתם בה' באייר תש\"ח ומגדיר את אופי המדינה.", answer: "מהי הכרזת העצמאות?", is_daily_double: false },
+            { points: 200, clue: "חוק יסוד המאפשר לכל יהודי בעולם לעלות לישראל ולהתאזרח בה.", answer: "מהו חוק השבות?", is_daily_double: false },
+            { points: 300, clue: "הסדר מסורתי בסוגיות דת ומדינה הכולל נישואין, שבת, כשרות וחינוך.", answer: "מהו הסדר הסטטוס קוו?", is_daily_double: false },
+            { points: 400, clue: "סמל המדינה הרשמי המעוצב על בסיס מנורת המקדש וענפי זית.", answer: "מהו סמל מנורת שבעת הקנים?", is_daily_double: false },
+            { points: 500, clue: "הגדרה המשלבת את זהות המדינה כמולדת העם היהודי לצד משטר דמוקרטי שוויוני לכל אזרחיה.", answer: "מהי הגדרת מדינה יהודית ודמוקרטית?", is_daily_double: false }
+          ]
+        }
+      ]
+    };
+
+    let savedTopics = JSON.parse(localStorage.getItem('civics_topics') || '[]');
+    let allTopics = [DEFAULT_TOPIC, ...savedTopics];
+
+    let selectedTeamCount = 3;
+    let selectedBoardSize = '6x5';
+    let currentTopicIndex = 0;
+
+    let teams = [];
+    let audioEnabled = true;
+    let audioCtx = null;
+    let currentClue = null;
+    let currentCell = null;
+
+    /* בדיקת מצב אדמין דרך כתובת הדף */
+    function checkAdminMode() {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('admin') === 'true') {
+        enableAdminUI();
+      }
+    }
+
+    function enableAdminUI() {
+      document.querySelectorAll('.btn-admin').forEach(el => el.style.display = 'inline-block');
+    }
+
+    /* קיצור מקלדת סודי להצגת כפתורי הניהול: Ctrl + Shift + A */
+    window.addEventListener('keydown', (e) => {
+      if (e.ctrlKey && e.shiftKey && e.code === 'KeyA') {
+        enableAdminUI();
+        alert("מצב מורה/אדמין הופעל!");
+      }
+    });
+
+    function initAudio() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+
+    function playTone(freq, duration, type = "sine") {
+      if (!audioEnabled) return;
+      initAudio();
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.value = freq;
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function playSound(name) {
+      if (name === 'click') playTone(587.33, 0.1, "triangle");
+      if (name === 'daily') {
+        playTone(392, 0.1, "sawtooth");
+        setTimeout(() => playTone(523.25, 0.15, "sawtooth"), 100);
+        setTimeout(() => playTone(659.25, 0.2, "sawtooth"), 250);
+      }
+      if (name === 'reveal') playTone(880, 0.15, "sine");
+    }
+
+    function toggleAudio() {
+      audioEnabled = !audioEnabled;
+      document.getElementById('audioBtn').innerText = `צליל: ${audioEnabled ? 'פעיל' : 'כבוי'}`;
+    }
+
+    /* מסך פתיחה */
+    function renderLobbyTopics() {
+      const container = document.getElementById('topicsContainer');
+      container.innerHTML = '';
+      allTopics.forEach((topicObj, index) => {
+        const card = document.createElement('div');
+        card.className = 'topic-card';
+        card.innerText = topicObj.topic;
+        card.onclick = () => startGame(index);
+        container.appendChild(card);
+      });
+    }
+
+    function selectTeamCount(count) {
+      selectedTeamCount = count;
+      document.querySelectorAll('.team-btn').forEach((btn, idx) => {
+        btn.classList.toggle('active', (idx + 1) === count);
+      });
+    }
+
+    function selectBoardSize(size) {
+      selectedBoardSize = size;
+      const sizeMap = { '4x4': 0, '5x4': 1, '6x5': 2 };
+      document.querySelectorAll('.size-btn').forEach((btn, idx) => {
+        btn.classList.toggle('active', idx === sizeMap[size]);
+      });
+    }
+
+    function startGame(topicIndex) {
+      currentTopicIndex = topicIndex;
+      initTeams();
+      renderScoreboard();
+      buildBoard();
+      
+      document.getElementById('currentTopicBadge').innerText = allTopics[topicIndex].topic;
+      document.getElementById('startScreen').style.display = 'none';
+      document.getElementById('gameScreen').style.display = 'flex';
+    }
+
+    function goToLobby() {
+      if (confirm("האם ברצונך לצאת למסך הראשי ולבחור נושא מחדש?")) {
+        document.getElementById('gameScreen').style.display = 'none';
+        document.getElementById('startScreen').style.display = 'flex';
+        renderLobbyTopics();
+      }
+    }
+
+    /* קבוצות וניקוד */
+    function initTeams() {
+      teams = [];
+      const teamLetters = ['א\'', 'ב\'', 'ג\'', 'ד\'', 'ה\'', 'ו\''];
+      if (selectedTeamCount === 1) {
+        teams.push({ name: "ניקוד אישי", score: 0 });
+      } else {
+        for (let i = 0; i < selectedTeamCount; i++) {
+          teams.push({ name: `קבוצה ${teamLetters[i]}`, score: 0 });
+        }
+      }
+    }
+
+    function renderScoreboard() {
+      const footer = document.getElementById('scoreboard');
+      footer.innerHTML = '';
+      teams.forEach((t, i) => {
+        const card = document.createElement('div');
+        card.className = 'team-card';
+        card.innerHTML = `
+          <div class="team-name">${t.name}</div>
+          <div class="team-score" id="score-${i}">${t.score}</div>
+          <div class="score-btns">
+            <button onclick="updateScore(${i}, 100)">+100</button>
+            <button onclick="updateScore(${i}, -100)">-100</button>
+          </div>
+        `;
+        footer.appendChild(card);
+      });
+    }
+
+    function updateScore(teamIdx, delta) {
+      teams[teamIdx].score += delta;
+      document.getElementById(`score-${teamIdx}`).innerText = teams[teamIdx].score;
+      playTone(delta > 0 ? 650 : 220, 0.1);
+    }
+
+    function resetBoardAndScore() {
+      if (confirm("לאפס את הלוח ואת ניקוד כל הקבוצות?")) {
+        teams.forEach(t => t.score = 0);
+        renderScoreboard();
+        buildBoard();
+      }
+    }
+
+    /* בניית לוח המשחק */
+    function buildBoard() {
+      const topic = allTopics[currentTopicIndex];
+      const board = document.getElementById('board');
+      board.innerHTML = '';
+
+      let colCount = 6, rowCount = 5;
+      if (selectedBoardSize === '4x4') { colCount = 4; rowCount = 4; }
+      else if (selectedBoardSize === '5x4') { colCount = 5; rowCount = 4; }
+
+      board.style.gridTemplateColumns = `repeat(${colCount}, 1fr)`;
+
+      const activeCategories = topic.categories.slice(0, colCount);
+
+      activeCategories.forEach(cat => {
+        const cell = document.createElement('div');
+        cell.className = 'cell cat-cell';
+        cell.innerText = cat.name;
+        board.appendChild(cell);
+      });
+
+      for (let r = 0; r < rowCount; r++) {
+        activeCategories.forEach(cat => {
+          const clue = cat.clues[r];
+          const cell = document.createElement('div');
+          cell.className = 'cell clue-cell';
+          cell.innerText = clue.points;
+          cell.onclick = () => openClue(clue, cat.name, cell);
+          board.appendChild(cell);
+        });
+      }
+    }
+
+    function openClue(clue, catName, cellElement) {
+      if (cellElement.classList.contains('used')) return;
+      currentClue = clue;
+      currentCell = cellElement;
+
+      document.getElementById('modalCat').innerText = catName;
+      document.getElementById('modalPoints').innerText = clue.points + ' נקודות';
+      document.getElementById('modalClue').innerText = clue.clue;
+      document.getElementById('modalAns').innerText = clue.answer;
+      document.getElementById('modalAns').style.display = 'none';
+      document.getElementById('showAnsBtn').style.display = 'inline-block';
+
+      const dailyTag = document.getElementById('modalDaily');
+      if (clue.is_daily_double) {
+        dailyTag.style.display = 'block';
+        playSound('daily');
+      } else {
+        dailyTag.style.display = 'none';
+        playSound('click');
+      }
+
+      document.getElementById('modal').style.display = 'flex';
+    }
+
+    function revealAnswer() {
+      document.getElementById('modalAns').style.display = 'block';
+      document.getElementById('showAnsBtn').style.display = 'none';
+      playSound('reveal');
+    }
+
+    function closeModal() {
+      document.getElementById('modal').style.display = 'none';
+      if (currentCell) {
+        currentCell.classList.add('used');
+        currentCell.innerText = '';
+      }
+    }
+
+    /* ניהול נושאים */
+    function openAdmin() {
+      document.getElementById('statusMsg').innerText = '';
+      document.getElementById('adminModal').style.display = 'flex';
+    }
+
+    function closeAdmin() {
+      document.getElementById('adminModal').style.display = 'none';
+    }
+
+    function saveNewTopic() {
+      const raw = document.getElementById('jsonInput').value.trim();
+      const status = document.getElementById('statusMsg');
+      try {
+        const parsed = JSON.parse(raw);
+        if (!parsed.topic || !Array.isArray(parsed.categories) || parsed.categories.length < 4) {
+          status.style.color = '#ff6b6b';
+          status.innerText = "שגיאה: יש לוודא שהמבנה מכיל שם נושא ולפחות 4 קטגוריות.";
+          return;
+        }
+        savedTopics.push(parsed);
+        localStorage.setItem('civics_topics', JSON.stringify(savedTopics));
+        allTopics = [DEFAULT_TOPIC, ...savedTopics];
+        renderLobbyTopics();
+        closeAdmin();
+        document.getElementById('jsonInput').value = '';
+        alert("הנושא נוסף בהצלחה למאגר!");
+      } catch (e) {
+        status.style.color = '#ff6b6b';
+        status.innerText = "שגיאה ב-JSON: הפורמט אינו תקין.";
+      }
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (document.getElementById('modal').style.display === 'flex') {
+        if (e.code === 'Space') {
+          e.preventDefault();
+          revealAnswer();
+        } else if (e.code === 'Escape') {
+          closeModal();
+        }
+      }
+    });
+
+    // הפעלה ראשונית
+    checkAdminMode();
+    renderLobbyTopics();
+  </script>
+</body>
+</html>
