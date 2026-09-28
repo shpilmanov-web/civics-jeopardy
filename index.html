@@ -33,7 +33,7 @@
     .controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
     button { padding: 6px 12px; font-size: 0.95rem; border-radius: 4px; border: 1px solid #4a5db5; background: #16246f; color: #fff; cursor: pointer; }
     button:hover { background: #233588; }
-    .btn-admin { background: #4338ca; border-color: #6366f1; display: none; } /* מוסתר כברירת מחדל */
+    .btn-admin { background: #4338ca; border-color: #6366f1; display: none; }
     .btn-home { background: #0284c7; border-color: #38bdf8; }
 
     main { flex: 1; padding: 15px; display: flex; justify-content: center; align-items: center; }
@@ -58,7 +58,7 @@
     .btn-close { background: #4b5563; }
 
     /* חלון ניהול נושאים */
-    #adminModal textarea { width: 100%; height: 220px; direction: ltr; text-align: left; font-family: monospace; padding: 10px; background: #050a22; color: #38bdf8; border: 1px solid #3b82f6; border-radius: 4px; font-size: 0.9rem; }
+    #adminModal textarea { width: 100%; height: 200px; direction: ltr; text-align: left; font-family: monospace; padding: 10px; background: #050a22; color: #38bdf8; border: 1px solid #3b82f6; border-radius: 4px; font-size: 0.9rem; }
     .status-msg { font-size: 0.9rem; min-height: 20px; margin-top: 5px; }
 
     /* לוח תוצאות תחתון */
@@ -72,7 +72,7 @@
 </head>
 <body>
 
-  <!-- מסך פתיחה ולוגין משחק -->
+  <!-- מסך פתיחה -->
   <div id="startScreen">
     <div class="lobby-card">
       <div class="lobby-title">ג'פרדי אזרחות</div>
@@ -149,86 +149,221 @@
   <!-- מודאל ניהול נושאים -->
   <div id="adminModal" class="modal-overlay">
     <div class="modal-box" style="max-width: 650px; text-align: right;">
-      <h2 style="color: #38bdf8; font-size: 1.3rem;">טעינת נושא חדש מ-Google AI Studio</h2>
-      <p style="font-size: 0.95rem; color: #cbd5e1;">הדבק כאן את קוד ה-JSON ולחץ שמירה:</p>
+      <h2 style="color: #38bdf8; font-size: 1.3rem;">ניהול נושאים</h2>
+      <p style="font-size: 0.95rem; color: #cbd5e1;">הדבק כאן את קוד ה-JSON של נושא חדש ולחץ שמירה:</p>
       <textarea id="jsonInput" placeholder='{"topic": "...", "categories": [...]}'></textarea>
       <div id="statusMsg" class="status-msg"></div>
-      <div style="display:flex; justify-content: flex-end; gap: 10px; margin-top: 10px;">
-        <button onclick="saveNewTopic()" style="background:#0284c7;">שמור נושא</button>
-        <button class="btn-close" onclick="closeAdmin()">סגור</button>
+      <div style="display:flex; justify-content: space-between; align-items: center; margin-top: 12px;">
+        <button onclick="clearCustomTopics()" style="background:#b91c1c; border-color:#ef4444;">נקה נושאים שנוספו</button>
+        <div style="display:flex; gap: 8px;">
+          <button onclick="saveNewTopic()" style="background:#0284c7;">שמור נושא</button>
+          <button class="btn-close" onclick="closeAdmin()">סגור</button>
+        </div>
       </div>
     </div>
   </div>
 
   <script>
-    const DEFAULT_TOPIC = {
-      topic: "יסודות הדמוקרטיה ושלטון החוק",
-      categories: [
-        {
-          name: "זכויות יסוד",
-          clues: [
-            { points: 100, clue: "זכות טבעית הקובעת כי אין לפגוע בגופו או בחייו של אדם.", answer: "מהי הזכות לחיים ולביטחון?", is_daily_double: false },
-            { points: 200, clue: "זכותו של אדם להחזיק ברכוש פרטי מבלי שיילקח ממנו ללא הליך כדין.", answer: "מהי הזכות לקניין?", is_daily_double: false },
-            { points: 300, clue: "איסור חוקי על פרסום צילום אישי של אדם ללא הסכמתו מגן על זכות זו.", answer: "מהי הזכות לפרטיות?", is_daily_double: false },
-            { points: 400, clue: "מתן יחס שונה לבני אדם כאשר קיימת שונות רלוונטית ומוצדקת ביניהם.", answer: "מהי הבחנה מותרת?", is_daily_double: true },
-            { points: 500, clue: "העקרון הקובע כי אדם נחשב חף מפשע עד להוכחת אשמתו בבית משפט.", answer: "מהי חזקת החפות?", is_daily_double: false }
-          ]
-        },
-        {
-          name: "שלטון העם",
-          clues: [
-            { points: 100, clue: "הכלי המרכזי שבאמצעותו אזרחים בוחרים את נציגיהם בדמוקרטיה ייצוגית.", answer: "מהן בחירות דמוקרטיות?", is_daily_double: false },
-            { points: 200, clue: "שיטת ממשל שבה כלל האזרחים השתתפו ישירות בקבלת ההחלטות.", answer: "מהי דמוקרטיה ישירה?", is_daily_double: false },
-            { points: 300, clue: "תנאי לבחירות הקובע כי לכל אזרח קול אחד השווה במשקלו לקולות אחרים.", answer: "מהו עקרון השוויון בבחירות?", is_daily_double: false },
-            { points: 400, clue: "הבטחה חוקתית לכך שההנהגה מתחלפת במועדים קבועים למניעת ריכוז כוח.", answer: "מהו עקרון חילופי השלטון?", is_daily_double: false },
-            { points: 500, clue: "הליך הצבעה שבו מובאת שאלה ספציפית ומכרעת ישירות להכרעת כלל הציבור.", answer: "מהו משאל עם?", is_daily_double: false }
-          ]
-        },
-        {
-          name: "שלטון החוק",
-          clues: [
-            { points: 100, clue: "העיקרון הקובע כי כולם, אזרחים ורשויות השלטון כאחד, כפופים לחוק שנקבע כדין.", answer: "מהו שלטון החוק?", is_daily_double: false },
-            { points: 200, clue: "פקודה צבאית בלתי מוסרית באופן מובהק שחובה מוחלטת לסרב לה.", answer: "מהי פקודה בלתי חוקית בעליל?", is_daily_double: false },
-            { points: 300, clue: "עקרון המחייב רשות מנהלית לפעול אך ורק על פי סמכות שהוענקה לה במפורש בחוק.", answer: "מהו עקרון חוקיות הממשל?", is_daily_double: false },
-            { points: 400, clue: "הפרת חוק גלויה ממניעים אידאולוגיים תוך מוכנות לשאת בעונש כדי לעורר שיח.", answer: "מהו מרי אזרחי?", is_daily_double: false },
-            { points: 500, clue: "סוג עבריינות שבה איש ציבור מנצל סמכות שלטונית כדי להיטיב עם מקורביו בניגוד לחוק.", answer: "מהי עבריינות שלטונית?", is_daily_double: false }
-          ]
-        },
-        {
-          name: "הפרדת רשויות",
-          clues: [
-            { points: 100, clue: "הרשות שתפקידה העיקרי הוא חקיקת חוקים ופיקוח שוטף על הממשלה בישראל.", answer: "מהי הרשות המחוקקת (הכנסת)?", is_daily_double: false },
-            { points: 200, clue: "הרשות האחראית על קביעת מדיניות וביצוע ענייני המדינה השוטפים.", answer: "מהי הרשות המבצעת (הממשלה)?", is_daily_double: false },
-            { points: 300, clue: "מערכת מוסדית שבה כל רשות מרסנת ומאזנת את עוצמתן של הרשויות האחרות.", answer: "מהו מנגנון איזונים ובלמים?", is_daily_double: false },
-            { points: 400, clue: "סמכות שיפוטית לבחון האם החלטות של רשויות מנהל התקבלו בסבירות וללא חריגה מסמכות.", answer: "מהי ביקורת שיפוטית?", is_daily_double: false },
-            { points: 500, clue: "חוקים בעלי מעמד עליון המהווים את תשתית החוקה הנבנית בישראל.", answer: "מהם חוקי יסוד?", is_daily_double: false }
-          ]
-        },
-        {
-          name: "פלורליזם וסובלנות",
-          clues: [
-            { points: 100, clue: "הכרה בזכות הקיום של מגוון דעות, עמדות וקבוצות שונות במרחב הציבורי.", answer: "מהו פלורליזם?", is_daily_double: false },
-            { points: 200, clue: "נכונות לקבל את השונה ולהכיל דעות מעוררות מחלוקת ללא שימוש באלימות.", answer: "מהי סובלנות?", is_daily_double: false },
-            { points: 300, clue: "השגת הסכמה רחבה בין מגזרים על כללי המשחק והמסגרת המשותפת לקיום המדינה.", answer: "מהי הסכמיות?", is_daily_double: false },
-            { points: 400, clue: "זכויות המוענקות לקבוצות מיעוט במטרה לשמר את זהותן התרבותית, הדתית והלשונית.", answer: "מהן זכויות קבוצתיות?", is_daily_double: false },
-            { points: 500, clue: "הגבלת התארגנות פוליטית המבקשת לנצל כלים דמוקרטיים במטרה לבטל את הדמוקרטיה.", answer: "מהי דמוקרטיה מתגוננת?", is_daily_double: false }
-          ]
-        },
-        {
-          name: "סמלים ומדינה",
-          clues: [
-            { points: 100, clue: "המסמך ההיסטורי המכונן שנחתם בה' באייר תש\"ח ומגדיר את אופי המדינה.", answer: "מהי הכרזת העצמאות?", is_daily_double: false },
-            { points: 200, clue: "חוק יסוד המאפשר לכל יהודי בעולם לעלות לישראל ולהתאזרח בה.", answer: "מהו חוק השבות?", is_daily_double: false },
-            { points: 300, clue: "הסדר מסורתי בסוגיות דת ומדינה הכולל נישואין, שבת, כשרות וחינוך.", answer: "מהו הסדר הסטטוס קוו?", is_daily_double: false },
-            { points: 400, clue: "סמל המדינה הרשמי המעוצב על בסיס מנורת המקדש וענפי זית.", answer: "מהו סמל מנורת שבעת הקנים?", is_daily_double: false },
-            { points: 500, clue: "הגדרה המשלבת את זהות המדינה כמולדת העם היהודי לצד משטר דמוקרטי שוויוני לכל אזרחיה.", answer: "מהי הגדרת מדינה יהודית ודמוקרטית?", is_daily_double: false }
-          ]
-        }
-      ]
-    };
+    const BUILTIN_TOPICS = [
+      {
+        topic: "יסודות הדמוקרטיה ושלטון החוק",
+        categories: [
+          {
+            name: "זכויות יסוד",
+            clues: [
+              { points: 100, clue: "זכות טבעית הקובעת כי אין לפגוע בגופו או בחייו של אדם.", answer: "מהי הזכות לחיים ולביטחון?", is_daily_double: false },
+              { points: 200, clue: "זכותו של אדם להחזיק ברכוש פרטי מבלי שיילקח ממנו ללא הליך כדין.", answer: "מהי הזכות לקניין?", is_daily_double: false },
+              { points: 300, clue: "איסור חוקי על פרסום צילום אישי של אדם ללא הסכמתו מגן על זכות זו.", answer: "מהי הזכות לפרטיות?", is_daily_double: false },
+              { points: 400, clue: "מתן יחס שונה לבני אדם כאשר קיימת שונות רלוונטית ומוצדקת ביניהם.", answer: "מהי הבחנה מותרת?", is_daily_double: true },
+              { points: 500, clue: "העקרון הקובע כי אדם נחשב חף מפשע עד להוכחת אשמתו בבית משפט.", answer: "מהי חזקת החפות?", is_daily_double: false }
+            ]
+          },
+          {
+            name: "שלטון העם",
+            clues: [
+              { points: 100, clue: "הכלי המרכזי שבאמצעותו אזרחים בוחרים את נציגיהם בדמוקרטיה ייצוגית.", answer: "מהן בחירות דמוקרטיות?", is_daily_double: false },
+              { points: 200, clue: "שיטת ממשל שבה כלל האזרחים השתתפו ישירות בקבלת ההחלטות.", answer: "מהי דמוקרטיה ישירה?", is_daily_double: false },
+              { points: 300, clue: "תנאי לבחירות הקובע כי לכל אזרח קול אחד השווה במשקלו לקולות אחרים.", answer: "מהו עקרון השוויון בבחירות?", is_daily_double: false },
+              { points: 400, clue: "הבטחה חוקתית לכך שההנהגה מתחלפת במועדים קבועים למניעת ריכוז כוח.", answer: "מהו עקרון חילופי השלטון?", is_daily_double: false },
+              { points: 500, clue: "הליך הצבעה שבו מובאת שאלה ספציפית ומכרעת ישירות להכרעת כלל הציבור.", answer: "מהו משאל עם?", is_daily_double: false }
+            ]
+          },
+          {
+            name: "שלטון החוק",
+            clues: [
+              { points: 100, clue: "העיקרון הקובע כי כולם, אזרחים ורשויות השלטון כאחד, כפופים לחוק שנקבע כדין.", answer: "מהו שלטון החוק?", is_daily_double: false },
+              { points: 200, clue: "פקודה צבאית בלתי מוסרית באופן מובהק שחובה מוחלטת לסרב לה.", answer: "מהי פקודה בלתי חוקית בעליל?", is_daily_double: false },
+              { points: 300, clue: "עקרון המחייב רשות מנהלית לפעול אך ורק על פי סמכות שהוענקה לה במפורש בחוק.", answer: "מהו עקרון חוקיות הממשל?", is_daily_double: false },
+              { points: 400, clue: "הפרת חוק גלויה ממניעים אידאולוגיים תוך מוכנות לשאת בעונש כדי לעורר שיח.", answer: "מהו מרי אזרחי?", is_daily_double: false },
+              { points: 500, clue: "סוג עבריינות שבה איש ציבור מנצל סמכות שלטונית כדי להיטיב עם מקורביו בניגוד לחוק.", answer: "מהי עבריינות שלטונית?", is_daily_double: false }
+            ]
+          },
+          {
+            name: "הפרדת רשויות",
+            clues: [
+              { points: 100, clue: "הרשות שתפקידה העיקרי הוא חקיקת חוקים ופיקוח שוטף על הממשלה בישראל.", answer: "מהי הרשות המחוקקת (הכנסת)?", is_daily_double: false },
+              { points: 200, clue: "הרשות האחראית על קביעת מדיניות וביצוע ענייני המדינה השוטפים.", answer: "מהי הרשות המבצעת (הממשלה)?", is_daily_double: false },
+              { points: 300, clue: "מערכת מוסדית שבה כל רשות מרסנת ומאזנת את עוצמתן של הרשויות האחרות.", answer: "מהו מנגנון איזונים ובלמים?", is_daily_double: false },
+              { points: 400, clue: "סמכות שיפוטית לבחון האם החלטות של רשויות מנהל התקבלו בסבירות וללא חריגה מסמכות.", answer: "מהי ביקורת שיפוטית?", is_daily_double: false },
+              { points: 500, clue: "חוקים בעלי מעמד עליון המהווים את תשתית החוקה הנבנית בישראל.", answer: "מהם חוקי יסוד?", is_daily_double: false }
+            ]
+          },
+          {
+            name: "פלורליזם וסובלנות",
+            clues: [
+              { points: 100, clue: "הכרה בזכות הקיום של מגוון דעות, עמדות וקבוצות שונות במרחב הציבורי.", answer: "מהו פלורליזם?", is_daily_double: false },
+              { points: 200, clue: "נכונות לקבל את השונה ולהכיל דעות מעוררות מחלוקת ללא שימוש באלימות.", answer: "מהי סובלנות?", is_daily_double: false },
+              { points: 300, clue: "השגת הסכמה רחבה בין מגזרים על כללי המשחק והמסגרת המשותפת לקיום המדינה.", answer: "מהי הסכמיות?", is_daily_double: false },
+              { points: 400, clue: "זכויות המוענקות לקבוצות מיעוט במטרה לשמר את זהותן התרבותית, הדתית והלשונית.", answer: "מהן זכויות קבוצתיות?", is_daily_double: false },
+              { points: 500, clue: "הגבלת התארגנות פוליטית המבקשת לנצל כלים דמוקרטיים במטרה לבטל את הדמוקרטיה.", answer: "מהי דמוקרטיה מתגוננת?", is_daily_double: false }
+            ]
+          },
+          {
+            name: "סמלים ומדינה",
+            clues: [
+              { points: 100, clue: "המסמך ההיסטורי המכונן שנחתם בה' באייר תש\"ח ומגדיר את אופי המדינה.", answer: "מהי הכרזת העצמאות?", is_daily_double: false },
+              { points: 200, clue: "חוק יסוד המאפשר לכל יהודי בעולם לעלות לישראל ולהתאזרח בה.", answer: "מהו חוק השבות?", is_daily_double: false },
+              { points: 300, clue: "הסדר מסורתי בסוגיות דת ומדינה הכולל נישואין, שבת, כשרות וחינוך.", answer: "מהו הסדר הסטטוס קוו?", is_daily_double: false },
+              { points: 400, clue: "סמל המדינה הרשמי המעוצב על בסיס מנורת המקדש וענפי זית.", answer: "מהו סמל מנורת שבעת הקנים?", is_daily_double: false },
+              { points: 500, clue: "הגדרה המשלבת את זהות המדינה כמולדת העם היהודי לצד משטר דמוקרטי שוויוני לכל אזרחיה.", answer: "מהי הגדרת מדינה יהודית ודמוקרטית?", is_daily_double: false }
+            ]
+          }
+        ]
+      },
+      {
+        topic: "עקרון זכויות האדם והאזרח",
+        categories: [
+          {
+            name: "סוגי זכויות",
+            clues: [
+              { points: 100, clue: "זכויות המגיעות לכל אדם מרגע לידתו ובאופן טבעי, ללא קשר למעשיו או לקבוצה אליה הוא משתייך.", answer: "מהן זכויות טבעיות?", is_daily_double: false },
+              { points: 200, clue: "זכויות המוענקות על ידי המדינה בתחום החברתי-כלכלי כדי להבטיח רמת חיים נאותה, כמו חינוך ובריאות.", answer: "מהן זכויות חברתיות?", is_daily_double: false },
+              { points: 300, clue: "קבוצת מיעוט דורשת מהמדינה לאפשר לה לקיים מערכת חינוך נפרדת בשפתה הייחודית כדי לשמור על זהותה.", answer: "מהן זכויות קבוצה (זכויות מיעוטים)?", is_daily_double: false },
+              { points: 400, clue: "זכויות כמו חופש העיתונות וההפגנה המאפשרות מעורבות ציבורית, להבדיל מהזכות לבחור ולהיבחר הניתנת לאזרחים בלבד.", answer: "מהן זכויות פוליטיות (אזרחיות)?", is_daily_double: false },
+              { points: 500, clue: "העיקרון לפיו זכויות האדם אינן מוחלטות ולעיתים לא ניתן לממשן במלואן בשל סיבה זו.", answer: "מהי התנגשות בין זכויות (או אינטרסים של המדינה)?", is_daily_double: false }
+            ]
+          },
+          {
+            name: "הזכות לחירות",
+            clues: [
+              { points: 100, clue: "זכותו של אדם להביע את עצמו, דעותיו ואמונותיו בדרכים מגוונות ובאופן פומבי.", answer: "מהו חופש הביטוי?", is_daily_double: false },
+              { points: 200, clue: "הזכות של אדם להחזיק בכל דעה מבלי לחשוש שייפגעו בו, כל עוד הדבר נשאר במחשבתו.", answer: "מהו חופש המחשבה?", is_daily_double: false },
+              { points: 300, clue: "אדם מבקש לקבל מידע מרשות שלטונית על פעולותיה כדי שיוכל לבקר את עבודתה.", answer: "מהו חופש המידע (או זכות הציבור לדעת)?", is_daily_double: false },
+              { points: 400, clue: "ההבדל בין הזכות להאמין ולקיים מצוות דת לבין הזכות שלא לסבול מכפייה דתית.", answer: "מהו ההבדל בין חופש דת לחופש מדת?", is_daily_double: false },
+              { points: 500, clue: "הזכות המעניקה הגנה מפני מעצר שאינו מבוסס על סיבה הגיונית או חשד סביר, אך נפרדת מהזכות להליך הוגן.", answer: "מהו חופש ממאסר שרירותי?", is_daily_double: false }
+            ]
+          },
+          {
+            name: "הזכות לשוויון",
+            clues: [
+              { points: 100, clue: "איסור על הענקת יחס שונה לאדם בשל דת, גזע, מין או העדפה מינית ללא סיבה מוצדקת.", answer: "מהי אפליה פסולה?", is_daily_double: false },
+              { points: 200, clue: "מתן יחס שונה לאנשים בעלי צרכים ייחודיים כאשר השוני רלוונטי לנושא הנדון.", answer: "מהי הבחנה?", is_daily_double: false },
+              { points: 300, clue: "המדינה מעניקה סיוע מוגבר וזמני לקבוצה שנוצר בה פער משמעותי כדי לצמצמו.", answer: "מהי העדפה מתקנת?", is_daily_double: false },
+              { points: 400, clue: "המושג המתאר את הזכות לקבל הזדמנות שווה במובן הכלכלי והחברתי, ולא רק שוויון פוליטי.", answer: "מהו שוויון הזדמנויות (מובן רחב)?", is_daily_double: false },
+              { points: 500, clue: "הקריטריון המבדיל בין 'הבחנה מותרת' לבין 'אפליה פסולה'.", answer: "מהי רלוונטיות השוני (סיבה מוצדקת ורלוונטית)?", is_daily_double: false }
+            ]
+          },
+          {
+            name: "כבוד וקניין",
+            clues: [
+              { points: 100, clue: "הזכות של אדם להחזיק ברכוש מוחשי כמו קרקע, בית או כסף.", answer: "מהו קניין חומרי?", is_daily_double: false },
+              { points: 200, clue: "הזכות שלא להיות נתון ליחס משפיל, מבזה או בלתי אנושי.", answer: "מהי הזכות לכבוד?", is_daily_double: false },
+              { points: 300, clue: "אדם תובע את חברו שפרסם עליו מידע שקרי שפגע במעמדו החברתי.", answer: "מהי הזכות לשם טוב?", is_daily_double: false },
+              { points: 400, clue: "הזכות המגינה על יצירות שאינן מוחשיות, כגון המצאות, לחנים או ספרים.", answer: "מהו קניין רוחני?", is_daily_double: true },
+              { points: 500, clue: "הזכות המונעת חדירה לתחום הפרטי של אדם ללא רשותו או חשיפת מידע אישי עליו.", answer: "מהי הזכות לפרטיות?", is_daily_double: false }
+            ]
+          },
+          {
+            name: "הזכות להליך הוגן",
+            clues: [
+              { points: 100, clue: "הנחת היסוד לפיה כל אדם נחשב זכאי עד שיוכח אחרת.", answer: "מהי חזקת החפות?", is_daily_double: false },
+              { points: 200, clue: "הפרק זמן המקסימלי שבו ניתן להחזיק אדם במעצר לפני הבאתו בפני שופט.", answer: "מהן 24 שעות?", is_daily_double: false },
+              { points: 300, clue: "דרישה משפטית המחייבת את המשטרה להציג מסמך חתום לפני כניסה לביתו של אדם לחיפוש.", answer: "מהו צו שופט?", is_daily_double: false },
+              { points: 400, clue: "הזכות המבטיחה הגנה משפטית גם למי שאין בידו את האמצעים הכלכליים לממנה.", answer: "מהי הזכות לייצוג משפטי (עורך דין)?", is_daily_double: false },
+              { points: 500, clue: "הדרישה שהמשפט יתקיים באופן גלוי ופתוח לציבור.", answer: "מהו משפט פומבי?", is_daily_double: false }
+            ]
+          },
+          {
+            name: "חובות האדם והאזרח",
+            clues: [
+              { points: 100, clue: "חובה אזרחית המעוגנת בחוק להשתתפות במימון שירותי המדינה.", answer: "מהו תשלום מיסים?", is_daily_double: false },
+              { points: 200, clue: "חובה מוסרית של כל אדם להכיר בזכויות הזולת ולהימנע מפגיעה בהן.", answer: "מהן חובות האדם כאדם?", is_daily_double: false },
+              { points: 300, clue: "חובה אזרחית המעוגנת בחוק לשמירה על ביטחון המדינה.", answer: "מהו שירות צבאי / ביטחוני?", is_daily_double: false },
+              { points: 400, clue: "חובה מוסרית של אזרח להשתתף בקביעת עתיד המדינה ביום הבחירות.", answer: "מהי ההצבעה בבחירות?", is_daily_double: false },
+              { points: 500, clue: "החובה לציית לחוקי המדינה גם כאשר אינם תואמים את השקפת עולמו האישית של האזרח.", answer: "מהו הציות לחוק?", is_daily_double: false }
+            ]
+          }
+        ]
+      },
+      {
+        topic: "עקרון שלטון העם",
+        categories: [
+          {
+            name: "מושגי יסוד ודמוקרטיה ישירה",
+            clues: [
+              { points: 100, clue: "הגוף המהווה את מקור הסמכות השלטונית הבלעדי והעליון והריבון במשטר דמוקרטי.", answer: "מי הוא העם?", is_daily_double: false },
+              { points: 200, clue: "משטר שבו כלל האזרחים משתתפים ישירות בקביעת המדיניות ובקבלת ההחלטות, כפי שהתקיים באתונה.", answer: "מהי דמוקרטיה ישירה?", is_daily_double: false },
+              { points: 300, clue: "המעמד במשטר דמוקרטי של אדם הזכאי להשתתף בתהליך השלטוני, בניגוד לנתין במשטר לא דמוקרטי.", answer: "מהו אזרח?", is_daily_double: false },
+              { points: 400, clue: "שני קשיים מרכזיים המונעים כיום קיום דמוקרטיה ישירה מלבד גודל האוכלוסייה וחוסר הזמן והמשאבים.", answer: "מהם מורכבות הנושאים והעדר ידע וכישורים נדרשים?", is_daily_double: false },
+              { points: 500, clue: "העיקרון הדמוקרטי שולל ביסוס לגיטימיות שלטונית על פי שלושת המאפיינים הללו של יחיד או קבוצה.", answer: "מהם מעמד סוציו-אקונומי, ייחוס תורשתי או כישורים ייחודיים?", is_daily_double: false }
+            ]
+          },
+          {
+            name: "משאל עם",
+            clues: [
+              { points: 100, clue: "הליך שבו פונה השלטון לכלל האזרחים בשאלה מרכזית כדי לקבל הכרעה בעד או נגד בקלפי.", answer: "מהו משאל עם?", is_daily_double: false },
+              { points: 200, clue: "נימוק בעד משאל עם הקובע כי הכרעה כזו מעניקה לממשלה כוח זה למימוש מדיניותה.", answer: "מהי לגיטימציה חזקה (למימוש מדיניות)?", is_daily_double: false },
+              { points: 300, clue: "טענת נגד למשאל עם הנוגעת לכך שרשויות השלטון הן שמנסחות את השאלה המופנית לציבור.", answer: "מהו החשש מניסוח מניפולטיבי?", is_daily_double: false },
+              { points: 400, clue: "חיסרון של משאל עם הבא לידי ביטוי בהבעת אי-אמון בנבחרי הציבור ובפגיעה בסמכותם לקבל החלטות.", answer: "מהו עקיפת הפרלמנט?", is_daily_double: false },
+              { points: 500, clue: "הרוב בכנסת שמעליו אין צורך במשאל עם לאישור הסכם הכרוך בוויתור על שטחי ריבונות לפי חוק משאל עם (2010).", answer: "מהו רוב מיוחס של 80 חברי כנסת?", is_daily_double: false }
+            ]
+          },
+          {
+            name: "תנאי בחירות דמוקרטיות",
+            clues: [
+              { points: 100, clue: "ראשי התיבות המסייעים לזכור את חמשת התנאים ההכרחיים לקיום בחירות דמוקרטיות.", answer: "מהו כ\"ח מש\"ה?", is_daily_double: false },
+              { points: 200, clue: "התנאי הקובע כי כלל האזרחים במדינה מגיל הקבוע בחוק רשאים לבחור ולהיבחר לבית הנבחרים.", answer: "מהו תנאי הכלליות?", is_daily_double: false },
+              { points: 300, clue: "התנאי שמטרתו למנוע הפעלת לחץ על הבוחר באמצעות הצבעה מאחורי פרגוד ובמעטפה אטומה.", answer: "מהו תנאי החשאיות?", is_daily_double: false },
+              { points: 400, clue: "התנאי המחייב קיום בחירות במרווחי זמן קבועים בחוק כדי לאפשר את הגבלת השלטון והחלפתו.", answer: "מהו תנאי המחזוריות (תקופתיות)?", is_daily_double: false },
+              { points: 500, clue: "התנאי הדורש תחרות הוגנת בין שני מתמודדים לפחות ושמירה על זכויות ומערכת חירויות כגון חופש הביטוי וההתאגדות.", answer: "מהו תנאי ההתמודדות החופשית?", is_daily_double: false }
+            ]
+          },
+          {
+            name: "דגמים של דמוקרטיה ייצוגית",
+            clues: [
+              { points: 100, clue: "משטר שבו האזרחים בוחרים נציגים המנהלים את המדינה ומקבלים החלטות למשך תקופה קצובה.", answer: "מהי דמוקרטיה עקיפה (ייצוגית)?", is_daily_double: false },
+              { points: 200, clue: "דגם דמוקרטי שבו העם בוחר את הפרלמנט, ומתוכו נבחרת הממשלה הנשענת על אמונו (כמו בישראל).", answer: "מהו משטר דמוקרטי-פרלמנטרי?", is_daily_double: false },
+              { points: 300, clue: "דגם דמוקרטי שבו העם בוחר בנפרד את הפרלמנט ובנפרד את הנשיא, שאינו תלוי בהצבעת אי-אמון (כמו בארה\"ב).", answer: "מהו משטר דמוקרטי נשיאותי?", is_daily_double: false },
+              { points: 400, clue: "הדגם הדמוקרטי הנהוג בצרפת, המשלב בחירה נפרדת של נשיא ופרלמנט עם צורך בתמיכת רוב הפרלמנט בממשלה.", answer: "מהו משטר דמוקרטי מעורב?", is_daily_double: false },
+              { points: 500, clue: "ההליך הפרלמנטרי המביא להפלת הממשלה במשטר פרלמנטרי כאשר היא מאבדת את תמיכת רוב חברי הפרלמנט.", answer: "מהי הצבעת אי-אמון?", is_daily_double: true }
+            ]
+          },
+          {
+            name: "שיטות בחירות בישראל",
+            clues: [
+              { points: 100, clue: "שלושת המאפיינים של שיטת הבחירות הנהוגה במדינת ישראל לכנסת.", answer: "מהן רשימתית, ארצית ויחסית?", is_daily_double: false },
+              { points: 200, clue: "המאפיין שבו כל שטח המדינה מהווה אזור בחירה יחיד והבחירות מתקיימות במועד אחיד.", answer: "מהי השיטה הארצית?", is_daily_double: false },
+              { points: 300, clue: "השיטה שבה חלוקת המושבים בפרלמנט נקבעת בהתאמה מדויקת לשיעור הקולות שקיבלה המפלגה.", answer: "מהי השיטה היחסית?", is_daily_double: false },
+              { points: 400, clue: "אחוז הקולות המינימלי הנדרש מתוך כלל המצביעים כדי שרשימה תזכה לייצוג בכנסת (כיום 3.25%).", answer: "מהו אחוז החסימה?", is_daily_double: false },
+              { points: 500, clue: "שני טיעונים מרכזיים של מתנגדי השיטה היחסית-ארצית כנגד יציבות השלטון והקשר עם הבוחר.", answer: "מהם פיצול מפלגתי (סחיטה קואליציונית) וניתוק הקשר הישיר בין הנבחר לבוחריו?", is_daily_double: false }
+            ]
+          },
+          {
+            name: "השתתפות אזרחית ומקורות ישראל",
+            clues: [
+              { points: 100, clue: "מעורבות פעילה של אזרחים בתהליכים חברתיים, קהילתיים ופוליטיים המשלימה את ההצבעה בבחירות.", answer: "מהי השתתפות אזרחית?", is_daily_double: false },
+              { points: 200, clue: "התאגדות עצמאית של אזרחים בארגונים ובעמותות שאינם חלק ממנגנון השלטון לפיקוח ולהעצמת הפרט.", answer: "מהי חברה אזרחית?", is_daily_double: false },
+              { points: 300, clue: "המקור המקראי המדגיש כי המלכת מנהיגים (כגון שאול ודוד) הצריכה את תמיכתו והסכמתו המפורשת של העם.", answer: "מהו ספר שמואל?", is_daily_double: false },
+              { points: 400, clue: "העיקרון התלמודי במסכת ברכות הקובע: 'אין מעמידין פרנס על הציבור אלא אם כן...' סיימו את המשפט.", answer: "מהו 'נמלכים בציבור'?", is_daily_double: false },
+              { points: 500, clue: "הדמות המקראית שנמלכו בעם לפני מינויה לתפקיד בניית המשכן, כהוכחה לחובת הסכמת הציבור.", answer: "מי הוא בצלאל בן אורי?", is_daily_double: false }
+            ]
+          }
+        ]
+      }
+    ];
 
     let savedTopics = JSON.parse(localStorage.getItem('civics_topics') || '[]');
-    let allTopics = [DEFAULT_TOPIC, ...savedTopics];
+    let allTopics = [...BUILTIN_TOPICS, ...savedTopics];
 
     let selectedTeamCount = 3;
     let selectedBoardSize = '6x5';
@@ -240,7 +375,6 @@
     let currentClue = null;
     let currentCell = null;
 
-    /* בדיקת מצב אדמין דרך כתובת הדף */
     function checkAdminMode() {
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.get('admin') === 'true') {
@@ -252,7 +386,6 @@
       document.querySelectorAll('.btn-admin').forEach(el => el.style.display = 'inline-block');
     }
 
-    /* קיצור מקלדת סודי להצגת כפתורי הניהול: Ctrl + Shift + A */
     window.addEventListener('keydown', (e) => {
       if (e.ctrlKey && e.shiftKey && e.code === 'KeyA') {
         enableAdminUI();
@@ -295,7 +428,6 @@
       document.getElementById('audioBtn').innerText = `צליל: ${audioEnabled ? 'פעיל' : 'כבוי'}`;
     }
 
-    /* מסך פתיחה */
     function renderLobbyTopics() {
       const container = document.getElementById('topicsContainer');
       container.innerHTML = '';
@@ -342,7 +474,6 @@
       }
     }
 
-    /* קבוצות וניקוד */
     function initTeams() {
       teams = [];
       const teamLetters = ['א\'', 'ב\'', 'ג\'', 'ד\'', 'ה\'', 'ו\''];
@@ -387,7 +518,6 @@
       }
     }
 
-    /* בניית לוח המשחק */
     function buildBoard() {
       const topic = allTopics[currentTopicIndex];
       const board = document.getElementById('board');
@@ -458,7 +588,6 @@
       }
     }
 
-    /* ניהול נושאים */
     function openAdmin() {
       document.getElementById('statusMsg').innerText = '';
       document.getElementById('adminModal').style.display = 'flex';
@@ -480,7 +609,7 @@
         }
         savedTopics.push(parsed);
         localStorage.setItem('civics_topics', JSON.stringify(savedTopics));
-        allTopics = [DEFAULT_TOPIC, ...savedTopics];
+        allTopics = [...BUILTIN_TOPICS, ...savedTopics];
         renderLobbyTopics();
         closeAdmin();
         document.getElementById('jsonInput').value = '';
@@ -488,6 +617,17 @@
       } catch (e) {
         status.style.color = '#ff6b6b';
         status.innerText = "שגיאה ב-JSON: הפורמט אינו תקין.";
+      }
+    }
+
+    function clearCustomTopics() {
+      if (confirm("האם למחוק את כל הנושאים הנוספים שנשמרו בדפדפן ולהחזיר לברירת המחדל?")) {
+        localStorage.removeItem('civics_topics');
+        savedTopics = [];
+        allTopics = [...BUILTIN_TOPICS];
+        renderLobbyTopics();
+        closeAdmin();
+        alert("הנושאים הנוספים נמחקו בהצלחה. כעת מוצגים רק נושאי הבסיס!");
       }
     }
 
@@ -502,7 +642,6 @@
       }
     });
 
-    // הפעלה ראשונית
     checkAdminMode();
     renderLobbyTopics();
   </script>
