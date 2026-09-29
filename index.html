@@ -6,8 +6,25 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
     body { background-color: #060b26; color: #fff; text-align: center; display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
 
-    /* מסך פתיחה (Lobby) */
-    #startScreen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 30px 20px; background: radial-gradient(circle at center, #101c5d 0%, #060b26 100%); }
+    /* מסך שער (Splash) */
+    #splashScreen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; background: radial-gradient(circle at center, #1b2da8 0%, #060b26 100%); cursor: pointer; user-select: none; padding: 20px; }
+    .splash-title { font-size: 4.5rem; font-weight: 900; color: #f5b324; text-shadow: 0 0 25px rgba(245, 179, 36, 0.6), 4px 4px 0 #000; letter-spacing: 2px; margin-bottom: 20px; }
+    .splash-subtitle { font-size: 1.8rem; color: #cbd5e1; text-shadow: 2px 2px 4px #000; margin-bottom: 40px; }
+    .splash-prompt { font-size: 1.3rem; color: #38bdf8; background: rgba(14, 30, 117, 0.7); border: 2px solid #38bdf8; padding: 12px 30px; border-radius: 50px; animation: pulse 1.8s infinite; }
+
+    /* מסך כללי המשחק (Rules) */
+    #rulesScreen { display: none; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 30px 20px; background: radial-gradient(circle at center, #101c5d 0%, #060b26 100%); }
+    .rules-card { background: #0c184d; border: 3px solid #f5b324; border-radius: 12px; max-width: 850px; width: 100%; padding: 35px 30px; box-shadow: 0 0 40px rgba(245, 179, 36, 0.25); text-align: right; }
+    .rules-title { font-size: 2.3rem; color: #f5b324; text-align: center; margin-bottom: 30px; text-shadow: 2px 2px 4px #000; }
+    .rule-item { display: flex; align-items: flex-start; gap: 18px; margin-bottom: 24px; font-size: 1.25rem; line-height: 1.6; color: #e2e8f0; }
+    .rule-num { background: #f5b324; color: #060b26; font-weight: 900; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.2rem; }
+    .rule-example { background: rgba(0, 0, 0, 0.35); border-right: 4px solid #38bdf8; padding: 10px 15px; margin-top: 8px; border-radius: 0 6px 6px 0; font-size: 1.1rem; color: #9bb0ff; }
+    .rules-btn-wrap { text-align: center; margin-top: 30px; }
+    .btn-rules-confirm { background: #0284c7; border: 2px solid #38bdf8; color: #fff; font-size: 1.3rem; font-weight: bold; padding: 12px 40px; border-radius: 8px; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 15px rgba(2, 132, 199, 0.4); }
+    .btn-rules-confirm:hover { background: #0369a1; transform: scale(1.03); }
+
+    /* מסך לובי (Lobby) */
+    #startScreen { display: none; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 30px 20px; background: radial-gradient(circle at center, #101c5d 0%, #060b26 100%); }
     .lobby-card { background: #0c184d; border: 3px solid #f5b324; border-radius: 12px; max-width: 900px; width: 100%; padding: 30px; box-shadow: 0 0 35px rgba(245, 179, 36, 0.25); }
     .lobby-title { font-size: 2.2rem; color: #f5b324; text-shadow: 2px 2px 4px #000; margin-bottom: 25px; }
     
@@ -17,6 +34,13 @@
     .team-btn, .size-btn { flex: 1; min-width: 60px; padding: 10px 15px; background: #16246f; border: 2px solid #33469e; color: #fff; font-size: 1.1rem; font-weight: bold; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
     .team-btn:hover, .size-btn:hover { background: #233588; border-color: #f5b324; }
     .team-btn.active, .size-btn.active { background: #f5b324; color: #060b26; border-color: #fff; }
+
+    /* שדות עריכת שמות קבוצות במסך לובי */
+    .team-names-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 12px; }
+    .team-input-wrap { display: flex; flex-direction: column; text-align: right; }
+    .team-input-label { font-size: 0.85rem; color: #cbd5e1; margin-bottom: 3px; }
+    .team-input { background: #071038; border: 1px solid #33469e; border-radius: 4px; padding: 8px 10px; color: #f5b324; font-size: 1rem; font-weight: bold; text-align: right; outline: none; }
+    .team-input:focus { border-color: #f5b324; box-shadow: 0 0 8px rgba(245, 179, 36, 0.4); }
 
     /* כרטיסי נושאים */
     .topics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-top: 10px; }
@@ -33,6 +57,7 @@
     button:hover { background: #233588; }
     .btn-admin { background: #4338ca; border-color: #6366f1; display: none; }
     .btn-home { background: #0284c7; border-color: #38bdf8; }
+    .btn-rules-nav { background: #059669; border-color: #10b981; }
 
     main { flex: 1; padding: 15px; display: flex; justify-content: center; align-items: center; }
     #board { display: grid; gap: 8px; width: 100%; max-width: 1150px; }
@@ -45,10 +70,17 @@
 
     /* חלון מודאל לשאלה */
     .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.88); z-index: 100; justify-content: center; align-items: center; padding: 20px; }
-    .modal-box { background: #0c1a66; border: 4px solid #f5b324; border-radius: 8px; max-width: 850px; width: 100%; padding: 25px; box-shadow: 0 0 30px rgba(245, 179, 36, 0.35); text-align: center; display: flex; flex-direction: column; gap: 15px; }
+    .modal-box { background: #0c1a66; border: 4px solid #f5b324; border-radius: 8px; max-width: 850px; width: 100%; padding: 25px; box-shadow: 0 0 30px rgba(245, 179, 36, 0.35); text-align: center; display: flex; flex-direction: column; gap: 15px; position: relative; }
     .modal-daily { display: none; color: #ff453a; font-size: 1.8rem; font-weight: 800; }
-    .modal-cat { color: #9bb0ff; font-size: 1.15rem; }
-    .modal-points { color: #f5b324; font-size: 1.6rem; font-weight: bold; }
+    .modal-top-bar { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+    .modal-cat { color: #9bb0ff; font-size: 1.15rem; text-align: right; }
+    .modal-points { color: #f5b324; font-size: 1.6rem; font-weight: bold; text-align: left; }
+
+    /* שעון עצר (Timer) */
+    .timer-container { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 5px 0; }
+    .timer-badge { font-size: 2.2rem; font-weight: 900; color: #38bdf8; background: #050a22; border: 2px solid #38bdf8; border-radius: 50px; width: 75px; height: 75px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 15px rgba(56, 189, 248, 0.3); transition: all 0.2s; }
+    .timer-badge.danger { color: #ef4444; border-color: #ef4444; box-shadow: 0 0 20px rgba(239, 68, 68, 0.6); animation: pulse 0.5s infinite; }
+
     .modal-clue { font-size: 1.5rem; line-height: 1.5; min-height: 100px; display: flex; align-items: center; justify-content: center; padding: 10px; }
     .modal-ans { display: none; font-size: 1.45rem; color: #4eff82; padding: 12px; border-top: 1px dashed #4a5db5; background: rgba(0, 0, 0, 0.25); border-radius: 4px; }
     .modal-actions { display: flex; justify-content: center; gap: 12px; margin-top: 10px; flex-wrap: wrap; }
@@ -61,20 +93,69 @@
 
     /* לוח תוצאות תחתון */
     footer { background: #080d28; border-top: 2px solid #233588; padding: 10px 15px; display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap; }
-    .team-card { background: #111a4f; border: 1px solid #33469e; border-radius: 6px; padding: 6px 14px; min-width: 130px; text-align: center; }
-    .team-name { font-size: 0.9rem; color: #cbd5e1; }
+    .team-card { background: #111a4f; border: 1px solid #33469e; border-radius: 6px; padding: 6px 14px; min-width: 140px; text-align: center; }
+    .team-name { font-size: 0.95rem; color: #cbd5e1; outline: none; padding: 2px 4px; border-radius: 3px; }
+    .team-name:focus { background: #1e293b; color: #f5b324; box-shadow: 0 0 5px #f5b324; }
     .team-score { font-size: 1.35rem; font-weight: bold; color: #f5b324; margin: 2px 0; }
     .score-btns { display: flex; gap: 5px; justify-content: center; }
     .score-btns button { padding: 2px 6px; font-size: 0.8rem; }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.04); opacity: 0.85; }
+      100% { transform: scale(1); opacity: 1; }
+    }
   </style></head><body>
 
-  <!-- מסך פתיחה -->
+  <!-- מסך 1: שער כניסה (Splash) -->
+  <div id="splashScreen" onclick="goToRulesScreen()">
+    <div class="splash-title">ג'פרדי אזרחות</div>
+    <div class="splash-subtitle">טריוויה אינטראקטיבית לבגרות באזרחות</div>
+    <div class="splash-prompt">לחץ כאן כדי להתחיל ◄</div>
+  </div>
+
+  <!-- מסך 2: כללי המשחק (Rules) -->
+  <div id="rulesScreen">
+    <div class="rules-card">
+      <div class="rules-title">כללי המשחק</div>
+      
+      <div class="rule-item">
+        <div class="rule-num">1</div>
+        <div>
+          <strong>זכות הדיבור:</strong> בכל תור, רק הקבוצה שבחרה את השאלה (או שקיבלה במפורש את זכות המענה מהמורה) רשאית לענות. מענה של קבוצה אחרת ייפסל.
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">2</div>
+        <div>
+          <strong>חובת ניסוח כשאלה:</strong> כל תשובה חייבת להיאמר בצורת שאלה ("מי הוא...?", "מהי...?", "מהו...?").
+          <div class="rule-example">
+            דוגמה: על הרמז <em>"ראש הממשלה הראשון של מדינת ישראל"</em> — התשובה התקנית היא: <strong>"מיהו דוד בן-גוריון?"</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">3</div>
+        <div>
+          <strong>דאבל יומי (Daily Double):</strong> בלוח מסתתרת משבצת מיוחדת המעניקה ניקוד כפול לקבוצה שתבחר בה ותענה נכון.
+        </div>
+      </div>
+
+      <div class="rules-btn-wrap">
+        <button class="btn-rules-confirm" onclick="goToLobbyScreen()">הבנתי, בואו נתחיל!</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- מסך 3: לובי ובחירת נושא -->
   <div id="startScreen">
     <div class="lobby-card">
-      <div class="lobby-title">ג'פרדי אזרחות</div>
+      <div class="lobby-title">הגדרות המשחק</div>
       
       <div class="setup-group">
-        <span class="setup-label">1. בחר מספר משתתפים / קבוצות:</span>
+        <span class="setup-label">1. בחר מספר משתתפים / קבוצות וערוך שמות:</span>
         <div class="team-selector" id="teamSelector">
           <button class="team-btn" onclick="selectTeamCount(1)">1 (תרגול אישי)</button>
           <button class="team-btn" onclick="selectTeamCount(2)">2</button>
@@ -83,6 +164,7 @@
           <button class="team-btn" onclick="selectTeamCount(5)">5</button>
           <button class="team-btn" onclick="selectTeamCount(6)">6</button>
         </div>
+        <div class="team-names-grid" id="teamNamesSetup"></div>
       </div>
 
       <div class="setup-group">
@@ -99,17 +181,19 @@
         <div class="topics-grid" id="topicsContainer"></div>
       </div>
 
-      <div id="lobbyAdminArea" style="margin-top: 25px; display: flex; justify-content: flex-end;">
+      <div id="lobbyAdminArea" style="margin-top: 25px; display: flex; justify-content: space-between; align-items: center;">
+        <button class="btn-rules-nav" onclick="goToRulesScreen()" style="padding: 8px 16px;">⌕ צפה שוב בכללים</button>
         <button class="btn-admin" onclick="openAdmin()" style="padding: 8px 16px;">ניהול והוספת נושאים</button>
       </div>
     </div>
   </div>
 
-  <!-- מסך המשחק -->
+  <!-- מסך 4: מסך המשחק -->
   <div id="gameScreen">
     <header>
       <div class="title-area" style="display: flex; align-items: center; gap: 10px;">
-        <button class="btn-home" onclick="goToLobby()">⌂ למסך הראשי</button>
+        <button class="btn-home" onclick="goToLobby()">⌂ ללובי</button>
+        <button class="btn-rules-nav" onclick="showRulesPopup()">כללים</button>
         <h1>ג'פרדי אזרחות</h1>
         <span class="current-topic-badge" id="currentTopicBadge"></span>
       </div>
@@ -131,8 +215,17 @@
   <div id="modal" class="modal-overlay">
     <div class="modal-box">
       <div id="modalDaily" class="modal-daily">★ DAILY DOUBLE! ★</div>
-      <div class="modal-cat" id="modalCat"></div>
-      <div class="modal-points" id="modalPoints"></div>
+      
+      <div class="modal-top-bar">
+        <div class="modal-cat" id="modalCat"></div>
+        <div class="modal-points" id="modalPoints"></div>
+      </div>
+
+      <!-- שעון ספירה לאחור מ-10 שניות -->
+      <div class="timer-container">
+        <div id="modalTimer" class="timer-badge">10</div>
+      </div>
+
       <div class="modal-clue" id="modalClue"></div>
       <div class="modal-ans" id="modalAns"></div>
       <div class="modal-actions">
@@ -482,7 +575,7 @@
           {
             name: "חוק האזרחות",
             clues: [
-              { points: 100, clue: "החוק הקובע את האפשרויות והתנאים לקבלת אזרחות ישראלית, תוך מתן עדיפות לבני הלאום יהודי.", answer: "מהו חוק האזרחות?", is_daily_double: false },
+              { points: 100, clue: "החוק הקובע את האפשרויות והתנאים לקבלת אזרחות ישראלית, תוך מתן עדיפות לבני הלאום היהודי.", answer: "מהו חוק האזרחות?", is_daily_double: false },
               { points: 200, clue: "דרך לקבלת אזרחות המוענקת לכל יהודי שעולה לישראל מתוקף חוק השבות.", answer: "מהי אזרחות מכוח שבות?", is_daily_double: false },
               { points: 300, clue: "דרך לקבלת אזרחות המיועדת לתושבים לא יהודים שחיו במדינת ישראל בזמן מפקד האוכלוסין של נובמבר 1948.", answer: "מהי אזרחות מכוח ישיבה בארץ?", is_daily_double: false },
               { points: 400, clue: "דרך לקבלת אזרחות המאפשרת לשר הפנים להעניק אזרחות למי שתרם תרומה משמעותית למדינה ומעוניין לגור בה.", answer: "מהי אזרחות מכוח הענקה?", is_daily_double: false },
@@ -651,10 +744,35 @@
     let currentTopicIndex = 0;
 
     let teams = [];
+    let customTeamNames = ["קבוצה א'", "קבוצה ב'", "קבוצה ג'", "קבוצה ד'", "קבוצה ה'", "קבוצה ו'"];
+
     let audioEnabled = true;
     let audioCtx = null;
     let currentClue = null;
     let currentCell = null;
+
+    /* ניהול טיימר */
+    let timerInterval = null;
+    let timeLeft = 10;
+
+    function goToRulesScreen() {
+      document.getElementById('splashScreen').style.display = 'none';
+      document.getElementById('startScreen').style.display = 'none';
+      document.getElementById('rulesScreen').style.display = 'flex';
+    }
+
+    function goToLobbyScreen() {
+      document.getElementById('splashScreen').style.display = 'none';
+      document.getElementById('rulesScreen').style.display = 'none';
+      document.getElementById('gameScreen').style.display = 'none';
+      document.getElementById('startScreen').style.display = 'flex';
+      renderTeamInputs();
+      renderLobbyTopics();
+    }
+
+    function showRulesPopup() {
+      alert("תזכורת כללי המשחק:\n1. רק הקבוצה שקיבלה את זכות הדיבור רשאית לענות.\n2. חובה לנסח את התשובה כשאלה (לדוגמה: ראש הממשלה הראשון? > מיהו דוד בן גוריון?).\n3. משבצת 'דאבל' מעניקה ניקוד כפול.");
+    }
 
     function checkAdminMode() {
       const urlParams = new URLSearchParams(window.location.search);
@@ -696,6 +814,11 @@
 
     function playSound(name) {
       if (name === 'click') playTone(587.33, 0.1, "triangle");
+      if (name === 'tick') playTone(700, 0.04, "sine");
+      if (name === 'timeout') {
+        playTone(220, 0.25, "sawtooth");
+        setTimeout(() => playTone(180, 0.4, "sawtooth"), 260);
+      }
       if (name === 'daily') {
         playTone(392, 0.1, "sawtooth");
         setTimeout(() => playTone(523.25, 0.15, "sawtooth"), 100);
@@ -707,6 +830,38 @@
     function toggleAudio() {
       audioEnabled = !audioEnabled;
       document.getElementById('audioBtn').innerText = `צליל: ${audioEnabled ? 'פעיל' : 'כבוי'}`;
+    }
+
+    function renderTeamInputs() {
+      const container = document.getElementById('teamNamesSetup');
+      container.innerHTML = '';
+      if (selectedTeamCount === 1) {
+        container.innerHTML = `
+          <div class="team-input-wrap">
+            <span class="team-input-label">שם המשתתף:</span>
+            <input class="team-input" value="${customTeamNames[0] || 'משתתף אישי'}" oninput="updateTeamName(0, this.value)">
+          </div>
+        `;
+      } else {
+        for (let i = 0; i < selectedTeamCount; i++) {
+          const wrap = document.createElement('div');
+          wrap.className = 'team-input-wrap';
+          wrap.innerHTML = `
+            <span class="team-input-label">שם קבוצה ${i + 1}:</span>
+            <input class="team-input" value="${customTeamNames[i]}" oninput="updateTeamName(${i}, this.value)">
+          `;
+          container.appendChild(wrap);
+        }
+      }
+    }
+
+    function updateTeamName(idx, val) {
+      customTeamNames[idx] = val.trim() || `קבוצה ${idx + 1}`;
+      if (teams[idx]) {
+        teams[idx].name = customTeamNames[idx];
+        const el = document.getElementById(`team-name-${idx}`);
+        if (el) el.innerText = customTeamNames[idx];
+      }
     }
 
     function renderLobbyTopics() {
@@ -726,6 +881,7 @@
       document.querySelectorAll('.team-btn').forEach((btn, idx) => {
         btn.classList.toggle('active', (idx + 1) === count);
       });
+      renderTeamInputs();
     }
 
     function selectBoardSize(size) {
@@ -748,21 +904,20 @@
     }
 
     function goToLobby() {
-      if (confirm("האם ברצונך לצאת למסך הראשי ולבחור נושא מחדש?")) {
+      if (confirm("האם ברצונך לחזור ללובי ולהגדיר נושא או קבוצות מחדש?")) {
+        stopTimer();
         document.getElementById('gameScreen').style.display = 'none';
-        document.getElementById('startScreen').style.display = 'flex';
-        renderLobbyTopics();
+        goToLobbyScreen();
       }
     }
 
     function initTeams() {
       teams = [];
-      const teamLetters = ['א\'', 'ב\'', 'ג\'', 'ד\'', 'ה\'', 'ו\''];
       if (selectedTeamCount === 1) {
-        teams.push({ name: "ניקוד אישי", score: 0 });
+        teams.push({ name: customTeamNames[0] || "ניקוד אישי", score: 0 });
       } else {
         for (let i = 0; i < selectedTeamCount; i++) {
-          teams.push({ name: `קבוצה ${teamLetters[i]}`, score: 0 });
+          teams.push({ name: customTeamNames[i], score: 0 });
         }
       }
     }
@@ -774,7 +929,7 @@
         const card = document.createElement('div');
         card.className = 'team-card';
         card.innerHTML = `
-          <div class="team-name">${t.name}</div>
+          <div class="team-name" id="team-name-${i}" contenteditable="true" onblur="updateTeamName(${i}, this.innerText)" title="לחץ לעריכת שם">${t.name}</div>
           <div class="team-score" id="score-${i}">${t.score}</div>
           <div class="score-btns">
             <button onclick="updateScore(${i}, 100)">+100</button>
@@ -842,6 +997,38 @@
       }
     }
 
+    function startTimer() {
+      stopTimer();
+      timeLeft = 10;
+      const badge = document.getElementById('modalTimer');
+      badge.classList.remove('danger');
+      badge.innerText = timeLeft;
+
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        badge.innerText = timeLeft;
+        
+        if (timeLeft <= 3 && timeLeft > 0) {
+          badge.classList.add('danger');
+          playSound('tick');
+        } else if (timeLeft > 3) {
+          playSound('tick');
+        }
+
+        if (timeLeft <= 0) {
+          stopTimer();
+          playSound('timeout');
+        }
+      }, 1000);
+    }
+
+    function stopTimer() {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+    }
+
     function openClue(clue, catName, cellElement) {
       if (cellElement.classList.contains('used')) return;
       currentClue = clue;
@@ -863,16 +1050,19 @@
         playSound('click');
       }
 
+      startTimer();
       document.getElementById('modal').style.display = 'flex';
     }
 
     function revealAnswer() {
+      stopTimer();
       document.getElementById('modalAns').style.display = 'block';
       document.getElementById('showAnsBtn').style.display = 'none';
       playSound('reveal');
     }
 
     function closeModal() {
+      stopTimer();
       document.getElementById('modal').style.display = 'none';
       if (currentCell) {
         currentCell.classList.add('used');
@@ -935,5 +1125,6 @@
     });
 
     checkAdminMode();
+    renderTeamInputs();
     renderLobbyTopics();
   </script></body></html>
