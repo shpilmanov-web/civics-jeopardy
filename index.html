@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="he" dir="rtl">
-<head>
+<!DOCTYPE html><html lang="he" dir="rtl"><head>
   <meta charset="UTF-8">
   <title>ג'פרדי אזרחות</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,8 +6,25 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
     body { background-color: #060b26; color: #fff; text-align: center; display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
 
-    /* מסך פתיחה (Lobby) */
-    #startScreen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 30px 20px; background: radial-gradient(circle at center, #101c5d 0%, #060b26 100%); }
+    /* מסך שער (Splash) */
+    #splashScreen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; background: radial-gradient(circle at center, #1b2da8 0%, #060b26 100%); cursor: pointer; user-select: none; padding: 20px; }
+    .splash-title { font-size: 4.5rem; font-weight: 900; color: #f5b324; text-shadow: 0 0 25px rgba(245, 179, 36, 0.6), 4px 4px 0 #000; letter-spacing: 2px; margin-bottom: 20px; }
+    .splash-subtitle { font-size: 1.8rem; color: #cbd5e1; text-shadow: 2px 2px 4px #000; margin-bottom: 40px; }
+    .splash-prompt { font-size: 1.3rem; color: #38bdf8; background: rgba(14, 30, 117, 0.7); border: 2px solid #38bdf8; padding: 12px 30px; border-radius: 50px; animation: pulse 1.8s infinite; }
+
+    /* מסך כללי המשחק (Rules) */
+    #rulesScreen { display: none; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 30px 20px; background: radial-gradient(circle at center, #101c5d 0%, #060b26 100%); }
+    .rules-card { background: #0c184d; border: 3px solid #f5b324; border-radius: 12px; max-width: 850px; width: 100%; padding: 35px 30px; box-shadow: 0 0 40px rgba(245, 179, 36, 0.25); text-align: right; }
+    .rules-title { font-size: 2.3rem; color: #f5b324; text-align: center; margin-bottom: 30px; text-shadow: 2px 2px 4px #000; }
+    .rule-item { display: flex; align-items: flex-start; gap: 18px; margin-bottom: 24px; font-size: 1.25rem; line-height: 1.6; color: #e2e8f0; }
+    .rule-num { background: #f5b324; color: #060b26; font-weight: 900; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.2rem; }
+    .rule-example { background: rgba(0, 0, 0, 0.35); border-right: 4px solid #38bdf8; padding: 10px 15px; margin-top: 8px; border-radius: 0 6px 6px 0; font-size: 1.1rem; color: #9bb0ff; }
+    .rules-btn-wrap { text-align: center; margin-top: 30px; }
+    .btn-rules-confirm { background: #0284c7; border: 2px solid #38bdf8; color: #fff; font-size: 1.3rem; font-weight: bold; padding: 12px 40px; border-radius: 8px; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 15px rgba(2, 132, 199, 0.4); }
+    .btn-rules-confirm:hover { background: #0369a1; transform: scale(1.03); }
+
+    /* מסך לובי (Lobby) */
+    #startScreen { display: none; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 30px 20px; background: radial-gradient(circle at center, #101c5d 0%, #060b26 100%); }
     .lobby-card { background: #0c184d; border: 3px solid #f5b324; border-radius: 12px; max-width: 900px; width: 100%; padding: 30px; box-shadow: 0 0 35px rgba(245, 179, 36, 0.25); }
     .lobby-title { font-size: 2.2rem; color: #f5b324; text-shadow: 2px 2px 4px #000; margin-bottom: 25px; }
     
@@ -19,6 +34,13 @@
     .team-btn, .size-btn { flex: 1; min-width: 60px; padding: 10px 15px; background: #16246f; border: 2px solid #33469e; color: #fff; font-size: 1.1rem; font-weight: bold; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
     .team-btn:hover, .size-btn:hover { background: #233588; border-color: #f5b324; }
     .team-btn.active, .size-btn.active { background: #f5b324; color: #060b26; border-color: #fff; }
+
+    /* שדות עריכת שמות קבוצות במסך לובי */
+    .team-names-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 12px; }
+    .team-input-wrap { display: flex; flex-direction: column; text-align: right; }
+    .team-input-label { font-size: 0.85rem; color: #cbd5e1; margin-bottom: 3px; }
+    .team-input { background: #071038; border: 1px solid #33469e; border-radius: 4px; padding: 8px 10px; color: #f5b324; font-size: 1rem; font-weight: bold; text-align: right; outline: none; }
+    .team-input:focus { border-color: #f5b324; box-shadow: 0 0 8px rgba(245, 179, 36, 0.4); }
 
     /* כרטיסי נושאים */
     .topics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-top: 10px; }
@@ -35,6 +57,7 @@
     button:hover { background: #233588; }
     .btn-admin { background: #4338ca; border-color: #6366f1; display: none; }
     .btn-home { background: #0284c7; border-color: #38bdf8; }
+    .btn-rules-nav { background: #059669; border-color: #10b981; }
 
     main { flex: 1; padding: 15px; display: flex; justify-content: center; align-items: center; }
     #board { display: grid; gap: 8px; width: 100%; max-width: 1150px; }
@@ -47,10 +70,17 @@
 
     /* חלון מודאל לשאלה */
     .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.88); z-index: 100; justify-content: center; align-items: center; padding: 20px; }
-    .modal-box { background: #0c1a66; border: 4px solid #f5b324; border-radius: 8px; max-width: 850px; width: 100%; padding: 25px; box-shadow: 0 0 30px rgba(245, 179, 36, 0.35); text-align: center; display: flex; flex-direction: column; gap: 15px; }
+    .modal-box { background: #0c1a66; border: 4px solid #f5b324; border-radius: 8px; max-width: 850px; width: 100%; padding: 25px; box-shadow: 0 0 30px rgba(245, 179, 36, 0.35); text-align: center; display: flex; flex-direction: column; gap: 15px; position: relative; }
     .modal-daily { display: none; color: #ff453a; font-size: 1.8rem; font-weight: 800; }
-    .modal-cat { color: #9bb0ff; font-size: 1.15rem; }
-    .modal-points { color: #f5b324; font-size: 1.6rem; font-weight: bold; }
+    .modal-top-bar { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+    .modal-cat { color: #9bb0ff; font-size: 1.15rem; text-align: right; }
+    .modal-points { color: #f5b324; font-size: 1.6rem; font-weight: bold; text-align: left; }
+
+    /* שעון עצר (Timer) */
+    .timer-container { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 5px 0; }
+    .timer-badge { font-size: 2.2rem; font-weight: 900; color: #38bdf8; background: #050a22; border: 2px solid #38bdf8; border-radius: 50px; width: 75px; height: 75px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 15px rgba(56, 189, 248, 0.3); transition: all 0.2s; }
+    .timer-badge.danger { color: #ef4444; border-color: #ef4444; box-shadow: 0 0 20px rgba(239, 68, 68, 0.6); animation: pulse 0.5s infinite; }
+
     .modal-clue { font-size: 1.5rem; line-height: 1.5; min-height: 100px; display: flex; align-items: center; justify-content: center; padding: 10px; }
     .modal-ans { display: none; font-size: 1.45rem; color: #4eff82; padding: 12px; border-top: 1px dashed #4a5db5; background: rgba(0, 0, 0, 0.25); border-radius: 4px; }
     .modal-actions { display: flex; justify-content: center; gap: 12px; margin-top: 10px; flex-wrap: wrap; }
@@ -63,22 +93,69 @@
 
     /* לוח תוצאות תחתון */
     footer { background: #080d28; border-top: 2px solid #233588; padding: 10px 15px; display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap; }
-    .team-card { background: #111a4f; border: 1px solid #33469e; border-radius: 6px; padding: 6px 14px; min-width: 130px; text-align: center; }
-    .team-name { font-size: 0.9rem; color: #cbd5e1; }
+    .team-card { background: #111a4f; border: 1px solid #33469e; border-radius: 6px; padding: 6px 14px; min-width: 140px; text-align: center; }
+    .team-name { font-size: 0.95rem; color: #cbd5e1; outline: none; padding: 2px 4px; border-radius: 3px; }
+    .team-name:focus { background: #1e293b; color: #f5b324; box-shadow: 0 0 5px #f5b324; }
     .team-score { font-size: 1.35rem; font-weight: bold; color: #f5b324; margin: 2px 0; }
     .score-btns { display: flex; gap: 5px; justify-content: center; }
     .score-btns button { padding: 2px 6px; font-size: 0.8rem; }
-  </style>
-</head>
-<body>
 
-  <!-- מסך פתיחה -->
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.04); opacity: 0.85; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+  </style></head><body>
+
+  <!-- מסך 1: שער כניסה (Splash) -->
+  <div id="splashScreen" onclick="goToRulesScreen()">
+    <div class="splash-title">ג'פרדי אזרחות</div>
+    <div class="splash-subtitle">טריוויה אינטראקטיבית לבגרות באזרחות</div>
+    <div class="splash-prompt">לחץ כאן כדי להתחיל ◄</div>
+  </div>
+
+  <!-- מסך 2: כללי המשחק (Rules) -->
+  <div id="rulesScreen">
+    <div class="rules-card">
+      <div class="rules-title">כללי המשחק</div>
+      
+      <div class="rule-item">
+        <div class="rule-num">1</div>
+        <div>
+          <strong>זכות הדיבור:</strong> בכל תור, רק הקבוצה שבחרה את השאלה (או שקיבלה במפורש את זכות המענה מהמורה) רשאית לענות. מענה של קבוצה אחרת ייפסל.
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">2</div>
+        <div>
+          <strong>חובת ניסוח כשאלה:</strong> כל תשובה חייבת להיאמר בצורת שאלה ("מי הוא...?", "מהי...?", "מהו...?").
+          <div class="rule-example">
+            דוגמה: על הרמז <em>"ראש הממשלה הראשון של מדינת ישראל"</em> — התשובה התקנית היא: <strong>"מיהו דוד בן-גוריון?"</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">3</div>
+        <div>
+          <strong>דאבל יומי (Daily Double):</strong> בלוח מסתתרת משבצת מיוחדת המעניקה ניקוד כפול לקבוצה שתבחר בה ותענה נכון.
+        </div>
+      </div>
+
+      <div class="rules-btn-wrap">
+        <button class="btn-rules-confirm" onclick="goToLobbyScreen()">הבנתי, בואו נתחיל!</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- מסך 3: לובי ובחירת נושא -->
   <div id="startScreen">
     <div class="lobby-card">
-      <div class="lobby-title">ג'פרדי אזרחות</div>
+      <div class="lobby-title">הגדרות המשחק</div>
       
       <div class="setup-group">
-        <span class="setup-label">1. בחר מספר משתתפים / קבוצות:</span>
+        <span class="setup-label">1. בחר מספר משתתפים / קבוצות וערוך שמות:</span>
         <div class="team-selector" id="teamSelector">
           <button class="team-btn" onclick="selectTeamCount(1)">1 (תרגול אישי)</button>
           <button class="team-btn" onclick="selectTeamCount(2)">2</button>
@@ -87,6 +164,7 @@
           <button class="team-btn" onclick="selectTeamCount(5)">5</button>
           <button class="team-btn" onclick="selectTeamCount(6)">6</button>
         </div>
+        <div class="team-names-grid" id="teamNamesSetup"></div>
       </div>
 
       <div class="setup-group">
@@ -103,17 +181,19 @@
         <div class="topics-grid" id="topicsContainer"></div>
       </div>
 
-      <div id="lobbyAdminArea" style="margin-top: 25px; display: flex; justify-content: flex-end;">
+      <div id="lobbyAdminArea" style="margin-top: 25px; display: flex; justify-content: space-between; align-items: center;">
+        <button class="btn-rules-nav" onclick="goToRulesScreen()" style="padding: 8px 16px;">⌕ צפה שוב בכללים</button>
         <button class="btn-admin" onclick="openAdmin()" style="padding: 8px 16px;">ניהול והוספת נושאים</button>
       </div>
     </div>
   </div>
 
-  <!-- מסך המשחק -->
+  <!-- מסך 4: מסך המשחק -->
   <div id="gameScreen">
     <header>
       <div class="title-area" style="display: flex; align-items: center; gap: 10px;">
-        <button class="btn-home" onclick="goToLobby()">⌂ למסך הראשי</button>
+        <button class="btn-home" onclick="goToLobby()">⌂ ללובי</button>
+        <button class="btn-rules-nav" onclick="showRulesPopup()">כללים</button>
         <h1>ג'פרדי אזרחות</h1>
         <span class="current-topic-badge" id="currentTopicBadge"></span>
       </div>
@@ -135,8 +215,17 @@
   <div id="modal" class="modal-overlay">
     <div class="modal-box">
       <div id="modalDaily" class="modal-daily">★ DAILY DOUBLE! ★</div>
-      <div class="modal-cat" id="modalCat"></div>
-      <div class="modal-points" id="modalPoints"></div>
+      
+      <div class="modal-top-bar">
+        <div class="modal-cat" id="modalCat"></div>
+        <div class="modal-points" id="modalPoints"></div>
+      </div>
+
+      <!-- שעון ספירה לאחור מ-10 שניות -->
+      <div class="timer-container">
+        <div id="modalTimer" class="timer-badge">10</div>
+      </div>
+
       <div class="modal-clue" id="modalClue"></div>
       <div class="modal-ans" id="modalAns"></div>
       <div class="modal-actions">
@@ -165,61 +254,6 @@
 
   <script>
     const BUILTIN_TOPICS = [
-      {
-        topic: "הכרזת העצמאות",
-        categories: [
-          {
-            name: "הצדקות להקמת המדינה",
-            clues: [
-              { points: 100, clue: "ההצדקה הנובעת מכך שלכל עם יש קשר לשטח ארץ מסוים שהוא המולדת שלו, ובה קם העם היהודי ויצר נכסי תרבות.", answer: "מהי ההצדקה ההיסטורית (הזכות ההיסטורית)?", is_daily_double: false },
-              { points: 200, clue: "ההכרה של מדינות העולם או של גוף בינלאומי רשמי בזכותו של העם היהודי להקים מדינה בארץ ישראל.", answer: "מהי ההצדקה הבינלאומית (הזכות החוקית-משפטית)?", is_daily_double: false },
-              { points: 300, clue: "הזכות האוניברסלית של כל עם להגדרה עצמית ולהקים מדינה עצמאית משלו, במיוחד עם שנמצא במצוקה שעבר את השואה.", answer: "מהי ההצדקה הטבעית (הזכות הטבעית)?", is_daily_double: false },
-              { points: 400, clue: "המאמץ לשיבה לארץ בדורות האחרונים, והשתתפות היישוב היהודי במלחמת העולם השנייה שהקנתה לו זכות להימנות על העמים באו\"ם, משמשים כנימוקים לסוג זה של הצדקה.", answer: "מהי ההצדקה ההיסטורית?", is_daily_double: false },
-              { points: 500, clue: "אירועים היסטוריים כגון החלטת האו\"ם והצהרת בלפור, אשר הכירו בזכות של העם היהודי למדינה בארץ ישראל, מהווים את הבסיס המרכזי להצדקה זו.", answer: "מהי ההצדקה הבינלאומית?", is_daily_double: true }
-            ]
-          },
-          {
-            name: "חלקי המגילה: ביצועי והצהרתי",
-            clues: [
-              { points: 100, clue: "החלק במגילה הכולל את ההצהרה על הקמת מדינת ישראל, מוסדות השלטון והסמכויות שלהם.", answer: "מהו החלק הביצועי (המעשי)?", is_daily_double: false },
-              { points: 200, clue: "החלק במגילה העוסק בערכים ובעקרונות עליהם תתבסס המדינה, כגון חירות, שוויון ועלייה יהודית.", answer: "מהו החלק ההצהרתי?", is_daily_double: false },
-              { points: 300, clue: "חלק זה במגילה כולל את ההתחייבות לכינון חוקה, ומאפשר לנהל באופן מעשי את המדינה.", answer: "מהו החלק הביצועי (המעשי)?", is_daily_double: false },
-              { points: 400, clue: "הבטחות לשוויון זכויות לכל האזרחים, חופש דת ומצפון, ושמירה על המקומות הקדושים מופיעות בחלק זה של המגילה.", answer: "מהו החלק ההצהרתי?", is_daily_double: false },
-              { points: 500, clue: "קביעת מבנה המערכת הפוליטית, הבחירות והמשטר הדמוקרטי מיד עם הקמת המדינה, מתאפשרת בזכות סעיפים המופיעים בחלק זה.", answer: "מהו החלק הביצועי (המעשי)?", is_daily_double: false }
-            ]
-          },
-          {
-            name: "החלק המדיני: פניות לגורמים",
-            clues: [
-              { points: 100, clue: "פנייה לגורם בינלאומי לשם שיתוף פעולה בהגשמת החלטת החלוקה ולקבלת ישראל לתוך משפחת העמים.", answer: "מי הוא האו\"ם?", is_daily_double: false },
-              { points: 200, clue: "פנייה לגורם זה קוראת לו לשמור על השלום ולקחת חלק בהקמת המדינה על יסוד אזרחות מלאה ושווה.", answer: "מי הם הערבים תושבי מדינת ישראל?", is_daily_double: false },
-              { points: 300, clue: "פנייה לגורם זה מושיטה יד לשלום ושכנות טובה, ולשיתוף פעולה במאמץ לקדם את המזרח התיכון כולו.", answer: "מי הן מדינות ערב (המדינות השכנות)?", is_daily_double: false },
-              { points: 400, clue: "קריאה להתלכד סביב הישוב היהודי, לסייע בבניית הארץ ולעלות לישראל כדי להגשים את שאיפת הדורות לגאולת ישראל.", answer: "מי הוא העם היהודי בתפוצות?", is_daily_double: false },
-              { points: 500, clue: "הבטחה להעניק ייצוג מתאים בכל מוסדות המדינה ניתנה במסגרת הפנייה לגורם זה, מתוך מטרה לשלבו במדינה החדשה.", answer: "מי הם הערבים תושבי מדינת ישראל?", is_daily_double: false }
-            ]
-          },
-          {
-            name: "מאפייני מדינה יהודית במגילה",
-            clues: [
-              { points: 100, clue: "קביעת שמה הרשמי של המדינה החדשה, המהווה ביטוי להיותה מדינה יהודית.", answer: "מהו השם \"מדינת ישראל\"?", is_daily_double: false },
-              { points: 200, clue: "הבטחה המופיעה במגילה ולפיה המדינה תאפשר לכל יהודי להגיע אליה.", answer: "מהי פתיחת שעריה לכל יהודי?", is_daily_double: false },
-              { points: 300, clue: "קביעה כי המדינה תושתת על יסודות החרות, הצדק והשלום לאור מורשתם של אישים אלו.", answer: "מי הם נביאי ישראל?", is_daily_double: false },
-              { points: 400, clue: "הקריאה ליהודי העולם להתלכד סביב המדינה ולסייע בבנייתה, המהווה דוגמה מובהקת לאופייה של המדינה.", answer: "מהו מאפיין של מדינה יהודית?", is_daily_double: false },
-              { points: 500, clue: "ההכרזה כי המדינה תהיה פתוחה לעלייה יהודית ותקרא לעם היהודי להתלכד סביבה, משמשת כהוכחה מעשית להיותה מדינה מסוג זה.", answer: "מהי מדינה יהודית?", is_daily_double: false }
-            ]
-          },
-          {
-            name: "מאפייני מדינה דמוקרטית במגילה",
-            clues: [
-              { points: 100, clue: "הבטחה המופיעה במגילה להעניק זכויות חברתיות ומדיניות לכל אזרחיה ללא הבדל דת, גזע ומין.", answer: "מהו שוויון זכויות?", is_daily_double: false },
-              { points: 200, clue: "התחייבות במגילה לשמור על אתרים בעלי חשיבות דתית עבור כל הדתות.", answer: "מהי שמירה על המקומות הקדושים?", is_daily_double: false },
-              { points: 300, clue: "ההכרזה על הקמת מוסדות נבחרים, קיום בחירות והתחייבות לכינון חוקה.", answer: "מהם מוסדות דמוקרטיים (או משטר דמוקרטי)?", is_daily_double: false },
-              { points: 400, clue: "ההבטחה להעניק לערבים אזרחי ישראל נציגות מתאימה בכל מוסדות המדינה, המבטאת את עקרון שלטון העם והפלורליזם.", answer: "מהי דוגמה להיותה של ישראל מדינה דמוקרטית?", is_daily_double: false },
-              { points: 500, clue: "התחייבות המדינה לפעול לפיתוח הארץ לטובת כל תושביה, ולהיות נאמנה לעקרונותיה של מגילת האו\"ם, כחלק מהיותה מדינה מודרנית ושוויונית.", answer: "מהם מאפייני מדינה דמוקרטית בהכרזת העצמאות?", is_daily_double: false }
-            ]
-          }
-        ]
-      },
       {
         topic: "יסודות הדמוקרטיה ושלטון החוק",
         categories: [
@@ -354,53 +388,63 @@
         topic: "עקרון שלטון העם",
         categories: [
           {
-            name: "מושגי יסוד בשלטון העם",
+            name: "מושגי יסוד ודמוקרטיה ישירה",
             clues: [
-              { points: 100, clue: "העיקרון לפיו העם הוא הריבון ומקור הסמכות השלטונית, והוא מעביר את הריבונות מרצונו החופשי לנציגים לפרק זמן קצוב.", answer: "מהו עקרון שלטון העם?", is_daily_double: false },
-              { points: 200, clue: "שיטה שבה כל האזרחים שולטים ביחד, עורכים דיונים ומקבלים ביחד החלטות, כפי שהתקיים באתונה לפני כ-2500 שנה.", answer: "מהי דמוקרטיה ישירה?", is_daily_double: false },
-              { points: 300, clue: "שיטה שבה האזרחים בוחרים נציגים אשר יקבעו מדיניות ויקבלו החלטות עבור כל האזרחים.", answer: "מהי דמוקרטיה ייצוגית (עקיפה)?", is_daily_double: false },
-              { points: 400, clue: "אחד הקשיים בקיום דמוקרטיה ישירה כיום, הנובע מכך שהאוכלוסייה כוללת מיליוני אנשים.", answer: "מהו חוסר האפשרות הטכנית לכנס את כולם לדיון?", is_daily_double: false },
-              { points: 500, clue: "קושי נוסף בקיום דמוקרטיה ישירה כיום, הנובע מכך שהמדינה מתעסקת בבעיות רבות מתחומים שונים.", answer: "מהו חוסר הידע והכישורים הנדרשים לרוב הציבור (או חוסר הזמן של הציבור העסוק בפרנסתו)?", is_daily_double: false }
+              { points: 100, clue: "הגוף המהווה את מקור הסמכות השלטונית הבלעדי והעליון והריבון במשטר דמוקרטי.", answer: "מי הוא העם?", is_daily_double: false },
+              { points: 200, clue: "משטר שבו כלל האזרחים משתתפים ישירות בקביעת המדיניות ובקבלת ההחלטות, כפי שהתקיים באתונה.", answer: "מהי דמוקרטיה ישירה?", is_daily_double: false },
+              { points: 300, clue: "המעמד במשטר דמוקרטי של אדם הזכאי להשתתף בתהליך השלטוני, בניגוד לנתין במשטר לא דמוקרטי.", answer: "מהו אזרח?", is_daily_double: false },
+              { points: 400, clue: "הסיבה המרכזית לכך שלא ניתן לקיים כיום דמוקרטיה ישירה בקרב מיליוני אזרחים במדינה מודרנית.", answer: "מהו חוסר היכולת הטכנית והמעשית לכנס את כלל הציבור?", is_daily_double: false },
+              { points: 500, clue: "שני קשיים מהותיים בדמוקרטיה ישירה מודרנית הנובעים מאופי הבעיות הציבוריות המורכבות.", answer: "מהם עומס הנושאים והעדר ידע ומומחיות מקצועית של הציבור?", is_daily_double: false }
             ]
           },
           {
-            name: "משאל עם - הגדרה ויתרונות",
+            name: "משאל עם",
             clues: [
-              { points: 100, clue: "תהליך בו רשויות השלטון מפנות שאלה לאזרחי המדינה בנושא מרכזי מאד, והעם נדרש לענות בעד או נגד.", answer: "מהו משאל עם?", is_daily_double: false },
-              { points: 200, clue: "יתרון של משאל עם, הנובע מכך שהציבור משתתף ומרגיש שביכולתו להשפיע על קבלת ההחלטות במדינה.", answer: "מהו חיזוק ההשתתפות הפוליטית?", is_daily_double: false },
-              { points: 300, clue: "יתרון של משאל עם, המאפשר לממשלה לטעון שזה מה שרוב הציבור רוצה, ובכך מסייע למימוש מדיניותה.", answer: "מהי מתן לגיטימציה לממשלה?", is_daily_double: false },
-              { points: 400, clue: "יתרון של משאל עם, המאפשר להכריע בנושאים השנויים במחלוקת באמצעות הצבעה הוגנת, כך שהצד המפסיד לא יוכל לבוא בטענות.", answer: "מהו מניעת פילוג בעם?", is_daily_double: false },
-              { points: 500, clue: "יתרון של משאל עם לעומת בחירות רגילות, הנוגע למיקוד בעמדת הציבור.", answer: "מהי העובדה שהתשובה משקפת את עמדת הציבור בנושא מסוים אחד (לעומת נושאים רבים בבחירות)?", is_daily_double: false }
+              { points: 100, clue: "הליך שבו פונה השלטון לכלל האזרחים בשאלה מוגדרת בנושא מהותי כדי לקבל הכרעה בעד או נגד בקלפי.", answer: "מהו משאל עם?", is_daily_double: false },
+              { points: 200, clue: "נימוק מרכזי בעד משאל עם המאפשר לממשלה לקבל גיבוי ציבורי רחב וישיר למהלכים גורליים.", answer: "מהי לגיטימציה שלטונית מוגברת?", is_daily_double: false },
+              { points: 300, clue: "טענת נגד מרכזית המתריעה מכך שהשלטון שולט על נוסח השאלה כדי להבטיח את התוצאה הרצויה לו.", answer: "מהו החשש מניסוח מניפולטיבי של השאלה?", is_daily_double: false },
+              { points: 400, clue: "חיסרון מבני במשאל עם הנובע ממתן מענה דיכוטומי של כן או לא ללא אפשרות לפשרה או הנמקה מורכבת.", answer: "מהו אופי פשטני המחדד קיטוב חברתי?", is_daily_double: false },
+              { points: 500, clue: "הפגיעה המוסדית שגורם משאל עם במעמדם וסמכותם של נבחרי הציבור בפרלמנט.", answer: "מהי עקיפת הפרלמנט ופגיעה בריבונות נבחרי העם?", is_daily_double: false }
             ]
           },
           {
-            name: "משאל עם - חסרונות",
+            name: "תנאי בחירות דמוקרטיות",
             clues: [
-              { points: 100, clue: "חיסרון של משאל עם, הנובע מכך שהוא דורש תשובה בעד או נגד, ללא אפשרות לפתרונות אחרים וללא אפשרות לנמקה.", answer: "מהו אופי פשטני?", is_daily_double: false },
-              { points: 200, clue: "חיסרון של משאל עם, הפוגע בסמכותם של נבחרי הציבור לקבל החלטות ויכול להוות הבעת אי אמון בהם.", answer: "מהו עקיפת הפרלמנט?", is_daily_double: false },
-              { points: 300, clue: "חיסרון של משאל עם, שבו במקום שהשלטון יקבל החלטות, הוא מעביר את קבלת ההחלטות לציבור.", answer: "מהי הסרת אחריות מצד השלטון?", is_daily_double: false },
-              { points: 400, clue: "החשש שניסוח השאלה על ידי רשויות השלטון ייעשה באופן שיגרום לציבור לתמוך בעמדת הממשלה.", answer: "מהו ניסוח מניפולטיבי?", is_daily_double: false },
-              { points: 500, clue: "חיסרון של משאל עם, הנובע מכך שמתקבלת תשובה נחרצת ללא אפשרות למשא ומתן פוליטי שיכול להוביל לפשרה.", answer: "מהו החשש לגרום לקרע בעם ולהחריף את השסעים הקיימים?", is_daily_double: true }
+              { points: 100, clue: "ראשי התיבות המרכזים את חמשת התנאים ההכרחיים לקיום בחירות דמוקרטיות.", answer: "מהו כ\"ח מש\"ה?", is_daily_double: false },
+              { points: 200, clue: "התנאי הקובע כי כלל האזרחים במדינה מגיל הקבוע בחוק רשאים לבחור ולהיבחר לבית הנבחרים.", answer: "מהו תנאי הכלליות?", is_daily_double: false },
+              { points: 300, clue: "התנאי המבטיח כי איש מלבד המצביע אינו יכול לדעת כיצד הצביע, למניעת לחצים ואיומים.", answer: "מהו תנאי החשאיות?", is_daily_double: false },
+              { points: 400, clue: "התנאי הקובע כי לכל אזרח קול אחד בלבד, וכל הקולות שווים במשקלם.", answer: "מהו תנאי השוויוניות?", is_daily_double: false },
+              { points: 500, clue: "התנאי המחייב קיום בחירות במרווחי זמן קבועים בחוק לצורך הבטחת הגבלת השלטון והחלפתו.", answer: "מהו תנאי המחזוריות (תקופתיות)?", is_daily_double: false }
             ]
           },
           {
-            name: "תנאים לבחירות דמוקרטיות",
+            name: "דגמים של דמוקרטיה ייצוגית",
             clues: [
-              { points: 100, clue: "התנאי הקובע כי כל האזרחים במדינה, מגיל שנקבע בחוק, רשאים לבחור ולהיבחר לבית הנבחרים.", answer: "מהי כלליות?", is_daily_double: false },
-              { points: 200, clue: "התנאי הקובע כי אף אחד לא יכול לדעת כיצד הצביע הבוחר, במטרה למנוע הפעלת לחץ עליו.", answer: "מהי חשאיות?", is_daily_double: false },
-              { points: 300, clue: "התנאי הקובע כי לכל מצביע יש קול אחד בלבד, וכל קול שווה לקול אחר.", answer: "מהי שוויוניות?", is_daily_double: false },
-              { points: 400, clue: "התנאי הקובע כי הבחירות מתקיימות כל פרק זמן קבוע בחוק, כדי לאפשר את החלפת השלטון.", answer: "מהי מחזוריות?", is_daily_double: false },
-              { points: 500, clue: "התנאי האוסר למנוע ממועמד להתחרות, ודורש התמודדות הוגנת בין שני מועמדים לפחות תוך שמירה על זכויות הקשורות למערכת החירות.", answer: "מהי התמודדות חופשית?", is_daily_double: false }
+              { points: 100, clue: "משטר שבו האזרחים בוחרים נציגים המנהלים את המדינה ומקבלים החלטות למשך תקופה קצובה.", answer: "מהי דמוקרטיה עקיפה (ייצוגית)?", is_daily_double: false },
+              { points: 200, clue: "דגם דמוקרטי שבו העם בוחר את הפרלמנט, ומתוכו נבחרת הממשלה הנשענת על אמונו (כמו בישראל).", answer: "מהו משטר דמוקרטי-פרלמנטרי?", is_daily_double: false },
+              { points: 300, clue: "דגם דמוקרטי שבו העם בוחר בנפרד את הפרלמנט ובנפרד את הנשיא, שאינו תלוי בהצבעת אי-אמון (כמו בארה\"ב).", answer: "מהו משטר דמוקרטי נשיאותי?", is_daily_double: false },
+              { points: 400, clue: "הדגם הדמוקרטי הנהוג בצרפת, המשלב בחירה נפרדת של נשיא ופרלמנט עם צורך בתמיכת רוב הפרלמנט בממשלה.", answer: "מהו משטר דמוקרטי מעורב?", is_daily_double: false },
+              { points: 500, clue: "ההליך הפרלמנטרי המביא להפלת הממשלה במשטר פרלמנטרי כאשר היא מאבדת את תמיכת רוב חברי הפרלמנט.", answer: "מהי הצבעת אי-אמון?", is_daily_double: true }
             ]
           },
           {
-            name: "שיטת הבחירות בישראל ועקרונות",
+            name: "שיטות בחירות בישראל",
             clues: [
-              { points: 100, clue: "העיקרון הדמוקרטי הבא לידי ביטוי בכך שהשלטון יכול להפסיד בבחירות, ובכך כוחו אינו מוחלט.", answer: "מהו עקרון הגבלת השלטון?", is_daily_double: false },
-              { points: 200, clue: "המאפיין של שיטת הבחירות בישראל שבו המצביעים בוחרים ברשימת מועמדים מטעם מפלגה, שנקבעת מראש.", answer: "מהי השיטה הרשימתית?", is_daily_double: false },
-              { points: 300, clue: "המאפיין של שיטת הבחירות בישראל שבו כל הארץ מהווה אזור בחירה אחד לצורך חישוב תוצאות הבחירות.", answer: "מהי השיטה הארצית?", is_daily_double: false },
-              { points: 400, clue: "המאפיין של שיטת הבחירות בישראל שבו חלוקת המושבים בפרלמנט נקבעת בהתאם לשיעור הקולות שכל מפלגה קיבלה.", answer: "מהי השיטה היחסית?", is_daily_double: false },
-              { points: 500, clue: "האחוז המינימלי הדרוש מתוך כל הקולות שהצביעו בבחירות, העומד בישראל על 3.25%, כדי שמפלגה תוכל לקבל ייצוג בכנסת.", answer: "מהו אחוז החסימה?", is_daily_double: false }
+              { points: 100, clue: "שלושת המאפיינים של שיטת הבחירות הנהוגה במדינת ישראל לכנסת.", answer: "מהן רשימתית, ארצית ויחסית?", is_daily_double: false },
+              { points: 200, clue: "המאפיין שבו כל שטח המדינה מהווה אזור בחירה יחיד והבחירות מתקיימות במועד אחיד.", answer: "מהי השיטה הארצית?", is_daily_double: false },
+              { points: 300, clue: "השיטה שבה חלוקת המושבים בפרלמנט נקבעת בהתאמה מדויקת לשיעור הקולות שקיבלה המפלגה.", answer: "מהי השיטה היחסית?", is_daily_double: false },
+              { points: 400, clue: "אחוז הקולות המינימלי הנדרש מתוך כלל המצביעים כדי שרשימה תזכה לייצוג בכנסת (כיום 3.25%).", answer: "מהו אחוז החסימה?", is_daily_double: false },
+              { points: 500, clue: "שני טיעונים מרכזיים של מתנגדי השיטה היחסית-ארצית כנגד יציבות השלטון והקשר עם הבוחר.", answer: "מהם פיצול מפלגתי (סחיטה קואליציונית) וניתוק הקשר הישיר בין הנבחר לבוחריו?", is_daily_double: false }
+            ]
+          },
+          {
+            name: "השתתפות אזרחית וחברה אזרחית",
+            clues: [
+              { points: 100, clue: "מעורבות פעילה של אזרחים בתהליכים חברתיים, קהילתיים ופוליטיים המשלימה את ההצבעה בבחירות.", answer: "מהי השתתפות אזרחית?", is_daily_double: false },
+              { points: 200, clue: "התאגדות עצמאית של אזרחים בארגונים, עמותות ותנועות שאינם חלק ממנגנון השלטון.", answer: "מהי חברה אזרחית?", is_daily_double: false },
+              { points: 300, clue: "קבוצות מאורגנות הפועלות במטרה להשפיע על מקבלי ההחלטות לטובת אינטרס או רעיון מוגדר.", answer: "מהן קבוצות אינטרס (שדולות / לובי)?", is_daily_double: false },
+              { points: 400, clue: "פעולת מחאה ציבורית מאורגנת שמטרתה להביע התנגדות למדיניות השלטון במסגרת החוק.", answer: "מהי הפגנה?", is_daily_double: false },
+              { points: 500, clue: "תפקידה של החברה האזרחית בבלימת שרירות לב שלטונית ובחשיפת עוולות ומחדלים של הממשל.", answer: "מהו פיקוח וביקורת בלתי פורמליים?", is_daily_double: false }
             ]
           }
         ]
@@ -461,56 +505,176 @@
         ]
       },
       {
+        topic: "הכרזת העצמאות",
+        categories: [
+          {
+            name: "הצדקות להקמת המדינה",
+            clues: [
+              { points: 100, clue: "ההצדקה המבוססת על הזיקה ההיסטורית של העם היהודי לארצו, יצירת נכסי תרבות לאומיים, רציפות היישוב והשואה.", answer: "מהי ההצדקה ההיסטורית?", is_daily_double: false },
+              { points: 200, clue: "ההצדקה הנובעת מהזכות האוניברסלית של כל עם להקים מדינה ריבונית משלו ככל העמים.", answer: "מהי ההצדקה הטבעית?", is_daily_double: false },
+              { points: 300, clue: "ההצדקה המבוססת על הכרה של גופים רשמיים ומדינות העולם בזכותו של העם היהודי למדינה.", answer: "מהי ההצדקה הבינלאומית (החוקית-משפטית)?", is_daily_double: false },
+              { points: 400, clue: "האירוע ההיסטורי הטרגי המוזכר בהכרזה כהוכחה לחובת פתרון בעיית חוסר המולדת באמצעות חידוש המדינה היהודית.", answer: "מהי השואה?", is_daily_double: false },
+              { points: 500, clue: "המסמך הבינלאומי משנת 1917 המוזכר בהכרזה כהכרה ראשונה בזכות העם היהודי להקים מחדש את ביתו הלאומי.", answer: "מהי הצהרת בלפור?", is_daily_double: false }
+            ]
+          },
+          {
+            name: "חלקי ההכרזה",
+            clues: [
+              { points: 100, clue: "החלק בהכרזה הכולל את ההצהרה על הקמת המדינה, מוסדות השלטון וההתחייבות לכינון חוקה.", answer: "מהו החלק הביצועי (המעשי)?", is_daily_double: false },
+              { points: 200, clue: "החלק בהכרזה העוסק באופי המדינה, ערכיה ועקרונות היסוד הדמוקרטיים שעליהם היא תושתת.", answer: "מהו החלק ההצהרתי?", is_daily_double: false },
+              { points: 300, clue: "החלק בהכרזה הפונה לגורמים שונים כגון האו\"ם, תושבי המדינה הערבים, מדינות ערב ויהדות התפוצות.", answer: "מהו החלק המדיני (הפניות)?", is_daily_double: false },
+              { points: 400, clue: "הגוף הזמני שהוכרז בחלק המעשי של המגילה כמי שיהווה את הממשלה הזמנית של המדינה.", answer: "מהי מנהלת העם?", is_daily_double: false },
+              { points: 500, clue: "הגוף הנבחר שהיה אמור לקבוע חוקה למדינת ישראל לא יאוחר מ-1 באוקטובר 1948, על פי החלק המעשי בהכרזה.", answer: "מהי האספה המכוננת?", is_daily_double: false }
+            ]
+          },
+          {
+            name: "מאפייני המדינה היהודית",
+            clues: [
+              { points: 100, clue: "השם שנבחר למדינה בהכרזת העצמאות, המהווה ביטוי בסיסי למדינה יהודית ריבונית.", answer: "מהו השם ישראל?", is_daily_double: false },
+              { points: 200, clue: "ההבטחה בהכרזה לפתוח את שערי המדינה לכל יהודי, המהווה ביטוי מרכזי לאופייה היהודי.", answer: "מהי עלייה יהודית (קיבוץ גלויות)?", is_daily_double: false },
+              { points: 300, clue: "הקריאה המופנית בהכרזה לקהילות היהודיות בעולם להתלכד סביב המדינה ולסייע בבניינה.", answer: "מהי הפנייה לעם היהודי בתפוצות?", is_daily_double: false },
+              { points: 400, clue: "העיקרון הלאומי המוכר במשפט הבינלאומי המוזכר במגילה כבסיס לתביעת העם היהודי למדינה עצמאית.", answer: "מהי הזכות להגדרה עצמית?", is_daily_double: false },
+              { points: 500, clue: "הפנייה במגילה למדינות האזור ועמיהן להושיט יד לשיתוף פעולה ולקידום המזרח התיכון כולו.", answer: "מהי הפנייה למדינות ערב השכנות?", is_daily_double: false }
+            ]
+          },
+          {
+            name: "מאפייני המדינה הדמוקרטית",
+            clues: [
+              { points: 100, clue: "ההבטחה בהכרזה להעניק זכויות שוות לכל האזרחים ללא הבדל דת, גזע ומין.", answer: "מהו שוויון זכויות חברתי ומדיני?", is_daily_double: false },
+              { points: 200, clue: "ההתחייבות המפורשת במגילה להבטיח את החירויות האזרחיות והאישיות של כלל התושבים.", answer: "מהו חופש דת, מצפון, לשון, חינוך ותרבות?", is_daily_double: false },
+              { points: 300, clue: "ההבטחה בהכרזה להעניק לאוכלוסייה הערבית אזרחות מלאה ושווה ונציגות מתאימה במוסדות השלטון.", answer: "מהי הפנייה לערביי ישראל?", is_daily_double: false },
+              { points: 400, clue: "המסמך הבינלאומי שההכרזה מבטיחה נאמנות לעקרונותיו, כביטוי לאופייה הדמוקרטי של המדינה.", answer: "מהי מגילת האומות המאוחדות (האו\"ם)?", is_daily_double: false },
+              { points: 500, clue: "המוסדות שההכרזה מבטיחה להקים בהתבסס על בחירות תקופתיות כביטוי למשטר דמוקרטי ייצוגי.", answer: "מהם מוסדות שלטון נבחרים?", is_daily_double: false }
+            ]
+          },
+          {
+            name: "המעמד המשפטי של ההכרזה",
+            clues: [
+              { points: 100, clue: "מעמדה של מגילת העצמאות מבחינה משפטית מחייבת, שאינה חוקה ואינה חוק רגיל.", answer: "מהו מסמך הצהרתי בעל אופי מנחה?", is_daily_double: false },
+              { points: 200, clue: "התפקיד שממלאת הכרזת העצמאות בפסיקת בתי המשפט כאשר לשון החוק עמומה או ניתנת לכמה פירושים.", answer: "מהו כלי עזר פרשני לחקיקה?", is_daily_double: false },
+              { points: 300, clue: "הכלל המשפטי הקובע כי כאשר קיימת הוראת חוק מפורשת של הכנסת הסותרת את המגילה, החוק גובר.", answer: "מהי עליונות החוק על פני ההכרזה?", is_daily_double: false },
+              { points: 400, clue: "שני חוקים שנחקקו בשנת 1992 ועיגנו בחוק את מחויבות רשויות השלטון לעקרונות מגילת העצמאות.", answer: "מהם חוק יסוד: כבוד האדם וחירותו וחוק יסוד: חופש העיסוק?", is_daily_double: false },
+              { points: 500, clue: "פסק הדין התקדימי משנת 1953 שבו נעשה שימוש בעקרונות המגילה להגנה על חופש הביטוי מול סמכות שר הפנים.", answer: "מהו פסק דין קול העם?", is_daily_double: true }
+            ]
+          }
+        ]
+      },
+      {
         topic: "המאפיינים היהודיים של המדינה",
         categories: [
           {
-            name: "חוקים בעלי אופי יהודי",
+            name: "חוק השבות",
             clues: [
-              { points: 100, clue: "חוק המעגן את אופייה היהודי של המדינה ומגדיר את מאפייניה כגון דגל, המנון, סמל וירושלים כעיר הבירה.", answer: "מהו חוק יסוד: ישראל מדינת הלאום של העם היהודי?", is_daily_double: false },
-              { points: 200, clue: "חוק הקובע שכל אזרחי ישראל מחויבים להתחתן ולהתגרש במסגרת בתי הדין של בני דתם.", answer: "מהו חוק שיפוט בתי דין רבניים (נישואין וגירושין)?", is_daily_double: false },
-              { points: 300, clue: "חוק האוסר על בעלי עסקים להציג חמץ בפומבי למכירה ברשות הרבים באזורים יהודיים במהלך חג הפסח.", answer: "מהו חוק חג המצות (איסורי חמץ)?", is_daily_double: false },
-              { points: 400, clue: "חוק המגדיר את ימי המנוחה במשק, וקובע כי ליהודים השבת וחגי ישראל הם ימי שבתון רשמיים, במטרה לשמור על תנאי העסקה הוגנים.", answer: "מהו חוק שעות עבודה ומנוחה?", is_daily_double: false },
-              { points: 500, clue: "חוק המדגיש את חשיבות הנחלת התרבות והמורשת היהודית, וקובע כי יש ללמד את תולדות העם היהודי וזיכרון השואה והגבורה.", answer: "מהו חוק חינוך ממלכתי?", is_daily_double: false }
+              { points: 100, clue: "החוק המעניק לכל יהודי את הזכות לעלות לארץ, במטרה לשמור על רוב יהודי באוכלוסייה בישראל.", answer: "מהו חוק השבות?", is_daily_double: false },
+              { points: 200, clue: "ההגדרה האזרחית-חוקית שנקבעה בתיקון לחוק השבות בשנת 1970 לעניין זכאות שבות.", answer: "מהי הגדרת מיהו יהודי בחוק השבות?", is_daily_double: false },
+              { points: 300, clue: "קרובי משפחה של יהודי שזכאים גם הם לעלות לארץ ולקבל אזרחות מתוקף חוק השבות, גם אם אינם יהודים בעצמם.", answer: "מי הם בן זוגו, ילדו ונכדו של היהודי?", is_daily_double: false },
+              { points: 400, clue: "סייג בחוק השבות המאפשר לשר הפנים לסרב להעניק אשרת עולה לאדם שעלול לסכן את בריאות הציבור, ביטחון המדינה או בעל עבר פלילי.", answer: "מהו הסייג לבעלי סיכון או עבר פלילי?", is_daily_double: false },
+              { points: 500, clue: "פרשה משפטית משנת 1962 שבה נדחתה בקשתו של נזיר כרמליתי לקבל אזרחות מכוח חוק השבות, בנימוק שהמיר את דתו מרצון.", answer: "מהי פרשת רופאייזן (האח דניאל)?", is_daily_double: false }
             ]
           },
           {
-            name: "חוקים נוספים ומשפט",
+            name: "חוק האזרחות",
             clues: [
-              { points: 100, clue: "חוק המעניק לכל יהודי, בן זוגו, ילדו ונכדו את הזכות לעלות לישראל, במטרה ליצור רוב יהודי.", answer: "מהו חוק השבות?", is_daily_double: false },
-              { points: 200, clue: "חוק המסדיר את דרכי רכישת אזרחות ישראלית, וקובע כי כל יהודי שעולה לישראל זכאי לקבל אזרחות \"מכוח השבות\".", answer: "מהו חוק האזרחות?", is_daily_double: false },
-              { points: 300, clue: "חוק הקובע כללי ענישה ייחודיים על פשעים שנעשו נגד העם היהודי לפני הקמת המדינה ומחוץ לגבולותיה.", answer: "מהו החוק לעשיית דין בנאצים ובעוזריהם?", is_daily_double: false },
-              { points: 400, clue: "חוק המנחה את בתי המשפט לפסוק על פי \"עקרונות החרות, הצדק והיושר של מורשת ישראל\" במקרים בהם אין חקיקה ראשית או תקדים.", answer: "מהו חוק יסודות המשפט?", is_daily_double: false },
-              { points: 500, clue: "תיקון משנת 1990 לפקודת העיריות, המסמיך כל רשות מקומית לקבוע בעצמה איזה עסקים ומקומות בילוי יהיו רשאים להיפתח בשבת.", answer: "מהו חוק ההסמכה?", is_daily_double: false }
+              { points: 100, clue: "החוק הקובע את האפשרויות והתנאים לקבלת אזרחות ישראלית, תוך מתן עדיפות לבני הלאום יהודי.", answer: "מהו חוק האזרחות?", is_daily_double: false },
+              { points: 200, clue: "דרך לקבלת אזרחות המוענקת לכל יהודי שעולה לישראל מתוקף חוק השבות.", answer: "מהי אזרחות מכוח שבות?", is_daily_double: false },
+              { points: 300, clue: "דרך לקבלת אזרחות המיועדת לתושבים לא יהודים שחיו במדינת ישראל בזמן מפקד האוכלוסין של נובמבר 1948.", answer: "מהי אזרחות מכוח ישיבה בארץ?", is_daily_double: false },
+              { points: 400, clue: "דרך לקבלת אזרחות המאפשרת לשר הפנים להעניק אזרחות למי שתרם תרומה משמעותית למדינה ומעוניין לגור בה.", answer: "מהי אזרחות מכוח הענקה?", is_daily_double: false },
+              { points: 500, clue: "חוק משנת 2003 המגביל הענקת אזרחות או תושבות לפלסטינים תושבי האזור הנישאים לאזרחים ישראלים, משיקולים ביטחוניים ודמוגרפיים.", answer: "מהו חוק האזרחות והכניסה לישראל (הוראת שעה)?", is_daily_double: false }
             ]
           },
           {
-            name: "המרחב הציבורי וסמלים",
+            name: "חוק יסוד: מדינת הלאום",
             clues: [
-              { points: 100, clue: "סמל המדינה המורכב ממנורה שעמדה בבית המקדש, ענפי זית וסמלי 12 שבטי ישראל בבסיסה.", answer: "מהו סמל מדינת ישראל?", is_daily_double: false },
-              { points: 200, clue: "המנון המדינה המבטא את שאיפת העם היהודי לחזור לארצו ולחדש בה את חרותו המדינית.", answer: "מהו \"התקווה\"?", is_daily_double: false },
-              { points: 300, clue: "השפה שנקבעה בחוק יסוד הלאום היהודי כשפה הרשמית של מדינת ישראל.", answer: "מהי השפה העברית?", is_daily_double: false },
-              { points: 400, clue: "חוק המחייב שימוש בתאריך זה בכל מסמך רשמי היוצא מטעם המדינה ומוסדותיה, כביטוי לאופייה היהודי.", answer: "מהו התאריך העברי (או לוח השנה העברי)?", is_daily_double: false },
-              { points: 500, clue: "שלושה ימים בלוח השנה הרשמי של המדינה, המתייחסים למאבק ההיסטורי הלאומי היהודי ומדגישים את הלאומיות וההיסטוריה היהודית.", answer: "מהם ימי הזיכרון (יום השואה, יום הזיכרון ויום העצמאות)?", is_daily_double: false }
+              { points: 100, clue: "חוק יסוד המעגן את אופייה היהודי של מדינת ישראל ומגדיר אותה כמדינת הלאום של העם היהודי.", answer: "מהו חוק יסוד: ישראל מדינת הלאום של העם היהודי?", is_daily_double: false },
+              { points: 200, clue: "הזכות המעוגנת בחוק הלאום, הקובעת כי מימוש זכות זו במדינת ישראל ייחודי לעם היהודי.", answer: "מהי הזכות להגדרה עצמית לאומית?", is_daily_double: false },
+              { points: 300, clue: "המעמד שניתן לשפה העברית בחוק הלאום.", answer: "מהי שפת המדינה?", is_daily_double: false },
+              { points: 400, clue: "המעמד שניתן לשפה הערבית בחוק הלאום, תוך קביעה שהסדרת השימוש בה במוסדות ממלכתיים תהיה בחוק.", answer: "מהו מעמד מיוחד?", is_daily_double: false },
+              { points: 500, clue: "הערך הלאומי שהמדינה רואה בו חשיבות ותפעל לעודד ולקדם את ביסוסו, כפי שמוגדר בסעיף 7 לחוק הלאום.", answer: "מהי התיישבות יהודית?", is_daily_double: false }
+            ]
+          },
+          {
+            name: "סמלי המדינה והמרחב הציבורי",
+            clues: [
+              { points: 100, clue: "סמל המדינה הרשמי הכולל מנורת שבעת קנים, עלי זית משני צדדיה והמילה ישראל.", answer: "מהו סמל מדינת ישראל?", is_daily_double: false },
+              { points: 200, clue: "דגל המדינה המורכב מרקע לבן, שני פסי תכלת ומגן דוד במרכזו.", answer: "מהו דגל מדינת ישראל?", is_daily_double: false },
+              { points: 300, clue: "ההמנון הלאומי המבטא את שאיפת העם היהודי לחזור לארצו ולחדש בה את חירותו המדינית.", answer: "מהי התקווה?", is_daily_double: false },
+              { points: 400, clue: "לוח השנה שנקבע בחוק כלוח רשמי של המדינה, המשמש לקביעת החגים והמועדים הלאומיים לצד הלוח הגרגוריאני.", answer: "מהו הלוח העברי?", is_daily_double: false },
+              { points: 500, clue: "החוק הקובע כי ימי המנוחה הקבועים במשק הם ימי שבת וחגי ישראל, תוך מתן זכות ללא-יהודים לשבות בימי חגם.", answer: "מהו חוק שעות עבודה ומנוחה?", is_daily_double: false }
+            ]
+          },
+          {
+            name: "חקיקה בעלת אופי יהודי",
+            clues: [
+              { points: 100, clue: "חוק האוסר על בעלי עסקים להציג חמץ בפומבי למכירה או לצריכה במהלך ימי חג הפסח באזורים בעלי רוב יהודי.", answer: "מהו חוק חג המצות (איסור חמץ)?", is_daily_double: false },
+              { points: 200, clue: "חוק האוסר על גידול חזירים בארץ, למעט ביישובים שבהם מרוכזת אוכלוסייה לא-יהודית המותרת בכך.", answer: "מהו חוק איסור גידול חזיר?", is_daily_double: false },
+              { points: 300, clue: "חוק המגדיר את מטרות מערכת החינוך, לרבות לימוד תולדות העם היהודי, מורשתו ותרבותו האזרחית והלאומית.", answer: "מהו חוק חינוך ממלכתי?", is_daily_double: false },
+              { points: 400, clue: "חוק המסדיר את מעמדו של גוף מוסדי האחראי לרכישת קרקעות והכשרתן להתיישבות ופיתוח אזרחי.", answer: "מהו חוק קרן קיימת לישראל?", is_daily_double: false },
+              { points: 500, clue: "חוק הקובע כי במקרה של חסר משפטי (לאקונה) שאין לו מענה בחוק או בתקדים, יכריע השופט לאור עקרונות החירות, הצדק, היושר והשלום.", answer: "מהו חוק יסודות המשפט?", is_daily_double: false }
             ]
           },
           {
             name: "הסדר הסטטוס-קוו",
             clues: [
-              { points: 100, clue: "הסדר שנועד להכריע במחלוקות בסוגיות דת ומדינה, המבוסס על מכתב ששלח דוד בן-גוריון ב-1947.", answer: "מהו הסדר הסטטוס-קוו?", is_daily_double: false },
-              { points: 200, clue: "אחת מארבע הסוגיות בהסדר הסטטוס-קוו, הקובעת כי מוסדות ציבור ומשרדי ממשלה לא יעבדו ביום המנוחה.", answer: "מהי שמירת שבת?", is_daily_double: false },
-              { points: 300, clue: "סוגיה בהסדר הסטטוס-קוו המבטיחה שמירה על מטבח על פי ההלכה בכל מוסדות הציבור, כמו משרדי ממשלה וצה\"ל.", answer: "מהי שמירת מטבח כשר (כשרות)?", is_daily_double: false },
-              { points: 400, clue: "סוגיה בהסדר הסטטוס-קוו המבטיחה המשך עצמאות לכל זרמי החינוך, ובתוכם המערכת הדתית שתישאר נפרדת ותקבל תקציב מלא.", answer: "מהי שמירת המעמד העצמאי לחינוך הדתי?", is_daily_double: false },
-              { points: 500, clue: "חוק שנתן הכרה מחוץ למסגרת הממלכתית לבתי ספר של החינוך העצמאי החרדי, במטרה לחבר את הזרמים החרדיים למדינה ולשלבם במוסדותיה, כפי שהובטח בהסדר.", answer: "מהו חוק חינוך ממלכתי?", is_daily_double: true }
+              { points: 100, clue: "ההסדר הפוליטי שנועד לנהל מחלוקות בסוגיות יחסי דת ומדינה ולמנוע שסעים חברתיים עמוקים.", answer: "מהו הסדר הסטטוס-קוו?", is_daily_double: false },
+              { points: 200, clue: "המכתב הפוליטי שנשלח ערב הקמת המדינה להנהגת אגודת ישראל והיווה תשתית להסדרי דת ומדינה.", answer: "מהו מכתב הסטטוס-קוו (1947)?", is_daily_double: false },
+              { points: 300, clue: "אחד מסעיפי הסטטוס-קוו המסדיר את אספקת המזון המפוקח במוסדות ציבוריים, בתי חולים ומחנות צה\"ל.", answer: "מהו סעיף שמירת הכשרות?", is_daily_double: false },
+              { points: 400, clue: "סעיף בסטטוס-קוו המעניק אוטונומיה ניהולית ותקציבית לזרמי חינוך סקטוריאליים שונים.", answer: "מהו סעיף האוטונומיה בחינוך הדתי?", is_daily_double: false },
+              { points: 500, clue: "הפרשה המשפטית התקדימית משנת 1968 שבה עתר רס\"ן לרישום ילדיו כבעלי לאום יהודי ללא סעיף דת, שהובילה לתיקון חוק השבות.", answer: "מהי פרשת שליט?", is_daily_double: true }
+            ]
+          }
+        ]
+      },
+      {
+        topic: "המיעוטים בישראל",
+        categories: [
+          {
+            name: "דמוגרפיה וזהות",
+            clues: [
+              { points: 100, clue: "הקבוצה המהווה כ-21% מכלל אזרחי המדינה, שרובה מוסלמים ומיעוטה נוצרים ודרוזים.", answer: "מהו המיעוט הערבי בישראל?", is_daily_double: false },
+              { points: 200, clue: "קבוצת מיעוט דתית המהווה פחות מ-2% מאוכלוסיית המדינה, שרובה רשומה בסעיף הלאום כערבים וחלקם כארמים.", answer: "מי הם הנוצרים בישראל?", is_daily_double: false },
+              { points: 300, clue: "קבוצת אוכלוסייה מוסלמית בעלת אורח חיים ומאפיינים חברתיים ייחודיים, המתרכזת בנגב ובצפון הארץ.", answer: "מי הם הבדואים בישראל?", is_daily_double: false },
+              { points: 400, clue: "המונח המתאר את זהותם של רוב ערביי ישראל, המשלבת אזרחות ישראלית לצד השתייכות לאומה הערבית ולעם הפלסטיני.", answer: "מהי זהות אזרחית ולאומית מורכבת?", is_daily_double: false },
+              { points: 500, clue: "מודל סוציולוגי המסביר את המתח המובנה בין הזהות האזרחית-ישראלית לבין הזהות הלאומית-פלסטינית בקרב המיעוט הערבי.", answer: "מהו מודל הקונפליקט?", is_daily_double: false }
             ]
           },
           {
-            name: "מדינת ישראל והעם היהודי בעולם",
+            name: "זכויות קבוצתיות",
             clues: [
-              { points: 100, clue: "תפיסת המדינה לפיה היא רואה את עצמה אחראית לשלומם של כל יהודי העולם, ופועלת לעזור להם בעת צרה.", answer: "מהי אחריות המדינה לתפוצות?", is_daily_double: false },
-              { points: 200, clue: "מוסדות רשמיים של המדינה, כגון הסוכנות היהודית ושר הקליטה, הפועלים לחיזוק זהות יהודית ועידוד עלייה.", answer: "מהם מוסדות לחינוך וחיזוק הקשר?", is_daily_double: false },
-              { points: 300, clue: "החוק הפלילי של מדינת ישראל מאפשר ענישה של מי שפגע ביהודי על רקע יהדותו, גם אם המעשה נעשה מחוץ לשטחה של המדינה.", answer: "מהו ביטוי לביטחון (כחלק מאחריות המדינה לתפוצות)?", is_daily_double: false },
-              { points: 400, clue: "מצב בו יהודי התפוצות חשים קרבה והזדהות עם ישראל, אך בהיותם אזרחים במדינותיהם הדבר עלול לגרום להם לקונפליקט.", answer: "מהי דילמת \"נאמנות כפולה\"?", is_daily_double: false },
-              { points: 500, clue: "קשר המתקיים על ידי ארגונים יהודיים בעולם המשתדלים להשפיע על ממשלותיהם לתמוך בישראל ולארגן מאבק לטובת דעת קהל עולמית אוהדת.", answer: "מהי תמיכה פוליטית בישראל?", is_daily_double: false }
+              { points: 100, clue: "זכויות המוענקות לקבוצות מיעוט לאומיות או תרבותיות במטרה לשמר את זהותן, מורשתן ושפתן במרחב הציבורי.", answer: "מהן זכויות קבוצה (זכויות מיעוטים)?", is_daily_double: false },
+              { points: 200, clue: "מעמדה של השפה הערבית על פי חוק יסוד: הלאום, לצד חובת הנגשת שירותים ומסמכים רשמיים.", answer: "מהו מעמד מיוחד לשפה הערבית?", is_daily_double: false },
+              { points: 300, clue: "סמכות השיפוט הייחודית שהמדינה מעניקה למיעוטים המוכרים להכריע בדיני המעמד האישי בהתאם לדיניהם.", answer: "מהי אוטונומיה שיפוטית (בתי דין דתיים)?", is_daily_double: false },
+              { points: 400, clue: "התחום המוסדי שבו המדינה מממנת מסגרות לימוד ייעודיות בשפת המיעוט, לצד תוכנית לימודים בפיקוח משרד החינוך.", answer: "מהי אוטונומיה בחינוך (זרם החינוך הערבי)?", is_daily_double: false },
+              { points: 500, clue: "פסק הדין התקדימי משנת 2000 שאסר על המדינה להפלות בהקצאת קרקעות ציבוריות על בסיס לאום באמצעות הסוכנות היהודית.", answer: "מהו בג\"ץ קעדאן (פרשת קציר)?", is_daily_double: false }
+            ]
+          },
+          {
+            name: "המיעוט הדרוזי",
+            clues: [
+              { points: 100, clue: "קבוצת מיעוט ייחודית המגדירה עצמה כקבוצה לאומית-אתנית מובחנת, המקיימת ברית אזרחית ושירות חובה בצה\"ל.", answer: "מי הם הדרוזים בישראל?", is_daily_double: false },
+              { points: 200, clue: "קבוצת תושבים דרוזים בעלי מעמד של תושבי קבע שרובם נמנעים מקבלת אזרחות ישראלית מאז 1967.", answer: "מי הם הדרוזים ברמת הגולן?", is_daily_double: false },
+              { points: 300, clue: "החובה המוטלת על גברים דרוזים בישראל מאז שנת 1956 מתוקף הסכם ברית הדמים בין מנהיגי העדה לבין המדינה.", answer: "מהו גיוס חובה לצה\"ל?", is_daily_double: false },
+              { points: 400, clue: "ההכרה הרשמית שהעניקה המדינה בשנת 1957 לקבוצה זו, שאפשרה הקמת מערכת שיפוטית נפרדת בענייני מעמד אישי.", answer: "מהי הכרה בעדה הדרוזית כעדה דתית נפרדת?", is_daily_double: false },
+              { points: 500, clue: "המחאה הציבורית הנרחבת שפרצה בקרב בני העדה בעקבות חקיקת חוק יסוד בשנת 2018 בשל היעדר אזכור מפורש של עקרון השוויון.", answer: "מהי המחאה נגד חוק יסוד: הלאום?", is_daily_double: false }
+            ]
+          },
+          {
+            name: "נקודות מפנה היסטוריות",
+            clues: [
+              { points: 100, clue: "המנגנון המשפטי-ביטחוני שהוחל על האוכלוסייה הערבית מקום המדינה והגביל באופן משמעותי את חופש התנועה והתעסוקה.", answer: "מהו הממשל הצבאי (1948–1966)?", is_daily_double: false },
+              { points: 200, clue: "השביתה והמחאה הציבורית הנרחבת שפרצה במרץ 1976 במחאה על הפקעת קרקעות בגליל וצוינה מאז מדי שנה.", answer: "מהו יום האדמה?", is_daily_double: false },
+              { points: 300, clue: "גל המחאות והעימותים הקשים של אזרחים ערבים מול המשטרה באוקטובר 2000, שבהם נהרגו 12 אזרחים ערבים ואזרח יהודי אחד.", answer: "מהם אירועי אוקטובר 2000?", is_daily_double: false },
+              { points: 400, clue: "הפטור המוענק בפועל לרוב ערביי ישראל מחובת הגיוס על ידי שר הביטחון לשם מניעת קונפליקט נאמנות.", answer: "מהו פטור משירות צבאי מטעמי מדיניות?", is_daily_double: false },
+              { points: 500, clue: "ועדת החקירה הממלכתית שהוקמה בעקבות אירועי שנת 2000, שקבעה כי על המדינה לפעול למיגור הזנחה ואפליה ממסדית.", answer: "מהי ועדת אור?", is_daily_double: true }
+            ]
+          },
+          {
+            name: "המיעוט הצ'רקסי והבדואי",
+            clues: [
+              { points: 100, clue: "קבוצת מיעוט מוסלמית מסורתית המקיימת גיוס התנדבותי לצה\"ל ומתמודדת עם סוגיות תכנון והסדרת יישובים.", answer: "מי הם הבדואים בישראל?", is_daily_double: false },
+              { points: 200, clue: "קבוצת מיעוט מוסלמית סונית לא-ערבית שמוצאה מהקווקז, המתגוררת בגליל ושומרת על תרבותה ולשונה.", answer: "מי הם הצ'רקסים?", is_daily_double: false },
+              { points: 300, clue: "שתי קבוצות המיעוט הלא-יהודיות שעליהן חלה חובת שירות ביטחון בצה\"ל על פי בקשת ראשיהן.", answer: "מי הם הדרוזים והצ'רקסים?", is_daily_double: false },
+              { points: 400, clue: "שני היישובים בגליל שבהם מרוכזת עיקר האוכלוסייה הצ'רקסית במדינת ישראל.", answer: "מהם כפר כמא וריחאניה?", is_daily_double: false },
+              { points: 500, clue: "המחלוקת המשפטית והתכנונית המרכזית בין המדינה לבין האוכלוסייה הבדואית בנגב הנוגעת לתביעות בעלות ופיתוח תשתיות.", answer: "מהי סוגיית הכפרים הבלתי מוכרים והסדרי הקרקעות?", is_daily_double: false }
             ]
           }
         ]
@@ -521,51 +685,51 @@
           {
             name: "תרבות פוליטית דמוקרטית",
             clues: [
-              { points: 100, clue: "ערכים, אמונות וצורות התנהגות המבטאים הזדהות עם עקרונות הדמוקרטיה.", answer: "מהי תרבות פוליטית דמוקרטית?", is_daily_double: false },
-              { points: 200, clue: "רמה גבוהה של השתתפות בבחירות, קבלת הכרעת הרוב והכרה בשלטון החוק הם ביטויים של מושג זה.", answer: "מהי תרבות פוליטית דמוקרטית?", is_daily_double: false },
-              { points: 300, clue: "תרבות פוליטית דמוקרטית והחינוך אליה מחזקים מאפיין זה של המדינה הדמוקרטית.", answer: "מהי היציבות (של המדינה)?", is_daily_double: false },
-              { points: 400, clue: "עובדה המציינת כי תרבות פוליטית דמוקרטית אינה אחידה בכל המדינות הדמוקרטיות בעולם.", answer: "מהי העובדה שהיא לא קיימת במידה שווה בכל הדמוקרטיות?", is_daily_double: false },
-              { points: 500, clue: "הפנמת ערכים אלו, לצד השתתפות אזרחית, מהווה את הבסיס לתרבות פוליטית דמוקרטית.", answer: "מהם פלורליזם, סובלנות והסכמיות?", is_daily_double: false }
+              { points: 100, clue: "מערכת של ערכים, אמונות וצורות התנהגות המבטאים הזדהות עם עקרונות הדמוקרטיה, כגון השתתפות בבחירות והכרה בשלטון החוק.", answer: "מהי תרבות פוליטית דמוקרטית?", is_daily_double: false },
+              { points: 200, clue: "ההשפעה המרכזית של חינוך לתרבות פוליטית דמוקרטית על יציבות המשטר והחברה במדינה.", answer: "מהו חיזוק היציבות המשטרית והחברתית?", is_daily_double: false },
+              { points: 300, clue: "העיקרון בתרבות הפוליטית הדמוקרטית השולל אלימות או כפיית הכרעה ומחייב הידברות ומו\"מ.", answer: "מהו פתרון סכסוכים בדרכי שלום?", is_daily_double: false },
+              { points: 400, clue: "התנאי לקיום תרבות דמוקרטית הנוגע להכרה של האזרחים בכללי המשחק ומוסדות המשטר כדרך הלגיטימית היחידה לקבלת הכרעות.", answer: "מהי הפנמת ההליך הדמוקרטי?", is_daily_double: false },
+              { points: 500, clue: "הנכונות של האזרחים להשפיע באופן פעיל על המרחב הציבורי באמצעות הצבעה, מפלגות, ארגונים ומחאה אזרחית.", answer: "מהי השתתפות ומעורבות אזרחית?", is_daily_double: false }
             ]
           },
           {
             name: "עקרון הסובלנות",
             clues: [
-              { points: 100, clue: "הנכונות לקבל ולכבד את כל בני האדם כמו שהם, למרות ההבדלים בדעות, בצבע העור, בשפה ובאמונה.", answer: "מהי סובלנות?", is_daily_double: false },
-              { points: 200, clue: "הימנעות מתגובות של אלימות פיזית או אלימות מילולית כלפי דעות ש\"מרגיזות\" אותי.", answer: "מהו ביטוי של סובלנות?", is_daily_double: false },
-              { points: 300, clue: "הימנעות מהפעלת כוח זה נגד דעות \"מרגיזות\", המהווה חלק מהגדרת הסובלנות.", answer: "מהי סמכות שלטונית?", is_daily_double: false },
-              { points: 400, clue: "קיום סובלנות מבטיח את מימושן של אלו, משום שכיבוד השונה דורש שגם הן יישמרו.", answer: "מהן זכויות הפרט והחברה?", is_daily_double: false },
-              { points: 500, clue: "סובלנות מבטיחה יציבות במדינה, כיוון שהיא מאפשרת לכולם לבטא את שונותם בדרך זו, ולא בסתר או בניגוד לחוק.", answer: "מהו בגלוי?", is_daily_double: false }
+              { points: 100, clue: "הנכונות לקבל ולכבד את השונה, ולהכיל דעות, עמדות ואורחות חיים מעוררי מחלוקת ללא שימוש באלימות.", answer: "מהי סובלנות?", is_daily_double: false },
+              { points: 200, clue: "סוגי התגובות שמחייב עקרון הסובלנות להימנע מהן לחלוטין כלפי עמדות מקוממות או מרגיזות.", answer: "מהן אלימות פיזית ואלימות מילולית?", is_daily_double: false },
+              { points: 300, clue: "החשיבות המשטרית של הסובלנות בהבטחת פעילות פוליטית גלויה של קבוצות מיעוט ללא חשש מרדיפה שלטונית.", answer: "מהי שמירה על היציבות והחופש הפוליטי?", is_daily_double: false },
+              { points: 400, clue: "הוגה הדעות הצרפתי שמשפט המיוחס לו ('אני שולל את מה שאתה אומר, אך אגן על זכותך לומר זאת') ממחיש את מהות הסובלנות.", answer: "מי הוא וולטר?", is_daily_double: false },
+              { points: 500, clue: "המצב המעשי שבו נבחנת מחויבותו של הפרט או השלטון לקבל עמדות המאיימות ישירות על השקפת עולמו.", answer: "מהו מבחן הסובלנות?", is_daily_double: false }
             ]
           },
           {
             name: "עקרון הפלורליזם",
             clues: [
-              { points: 100, clue: "הכרה בריבוי ובמגוון של קבוצות, דעות, צרכים ורצונות שונים במדינה.", answer: "מהו פלורליזם?", is_daily_double: false },
-              { points: 200, clue: "הפלורליזם דורש לא רק הכרה בזכות קיומן של קבוצות שונות, אלא גם מתן זכות זו לגבי השונות שלהן.", answer: "מהי הזכות לבטא את אותה שונות?", is_daily_double: false },
-              { points: 300, clue: "הפלורליזם מאפשר לקבוצות שונות לעשות זאת במסגרות שונות כדי לפעול להשגת הצרכים והרצונות השונים.", answer: "מהי האפשרות להתארגן?", is_daily_double: false },
-              { points: 400, clue: "ביטוי של פלורליזם בתחום זה בא לידי ביטוי בריבוי ומגוון של מפלגות, כגון 38 הרשימות שהתמודדו בבחירות לכנסת ב-2021.", answer: "מהו התחום הפוליטי?", is_daily_double: false },
-              { points: 500, clue: "קיומן של תנועות נוער שונות, כגון הצופים והשומר הצעיר, מהווה דוגמה לפלורליזם בתחום זה.", answer: "מהו התחום החינוכי-תרבותי?", is_daily_double: false }
-            ]
-          },
-          {
-            name: "מרכיבי הפלורליזם",
-            clues: [
-              { points: 100, clue: "הפלורליזם יוצר מצב זה בחברה, המונע ריכוזיות ומייצר איזון בין הקבוצות.", answer: "מהו פיזור הכוח?", is_daily_double: false },
-              { points: 200, clue: "הפלורליזם נותן לגיטימציה לפעולה זו בין מפלגות וארגונים השונים זה מזה במטרות ובאינטרסים.", answer: "מהם מאבקים?", is_daily_double: false },
-              { points: 300, clue: "הפלורליזם מעודד את הפעולה הזו של האזרחים, משום שקבוצות שיכולות לבטא שונות יחושו מוטיבציה חזקה יותר.", answer: "מהי השתתפות בפוליטיקה (או השתתפות בחיים הפוליטיים והחברתיים)?", is_daily_double: false },
-              { points: 400, clue: "אפשרות ביטוי לכל קבוצה בכל תחום מגבירה את המצב הזה בין הקבוצות השונות.", answer: "מהי תחרות חופשית?", is_daily_double: false },
-              { points: 500, clue: "ההכרה בשונות בין אנשים וקבוצות וההכרה בזכות להיות שונה, הם מרכיבים של פלורליזם המחזקים ערך דמוקרטי נוסף זה.", answer: "מהי סובלנות?", is_daily_double: false }
+              { points: 100, clue: "הכרה בריבוי ובשונות של קבוצות, דעות, אינטרסים וצרכים בחברה, ובזכותן להתארגן ולפעול לקידום מטרותיהן.", answer: "מהו פלורליזם?", is_daily_double: false },
+              { points: 200, clue: "הביטוי של פלורליזם הבא לידי ביטוי בהתמודדות של מגוון רשימות ומפלגות בבחירות לכנסת.", answer: "מהו פלורליזם פוליטי?", is_daily_double: false },
+              { points: 300, clue: "הביטוי של פלורליזם בקיומן של תנועות נוער, זרמי יצירה, עיתונות חופשית ויוזמות קהילתיות מגוונות.", answer: "מהו פלורליזם תרבותי-חברתי?", is_daily_double: false },
+              { points: 400, clue: "היתרון המשטרי של הפלורליזם המונע ריכוז עוצמה בידי מוקד שלטוני יחיד ומייצר איזונים בחברה.", answer: "מהו פיזור העוצמה ומניעת עריצות?", is_daily_double: false },
+              { points: 500, clue: "היתרון המבני של חברה פלורליסטית המאפשר לה להתאים את עצמה לתמורות ולחצים היסטוריים ללא שבירת המסגרת.", answer: "מהן גמישות ופתיחות לשינויים?", is_daily_double: false }
             ]
           },
           {
             name: "עקרון ההסכמיות",
             clues: [
-              { points: 100, clue: "הסכמה רחבה בין הקבוצות השונות במדינה על כללי המשחק הדמוקרטיים ועל סוגיות מרכזיות.", answer: "מהי הסכמיות?", is_daily_double: false },
-              { points: 200, clue: "ההסכמיות מאפשרת למדינה ולחברה לפעול כיחידה מגובשת ולנהל חיים משותפים, למרות קיומם של אלו.", answer: "מהם חילוקי דעות?", is_daily_double: false },
-              { points: 300, clue: "נושאים מרכזיים שעליהם חייבת להיות הסכמה כוללים את קיום המשטר הדמוקרטי, קבלת השלטון שנבחר כשלטון לגיטימי, ונושא זה הנוגע לשטח המדינה.", answer: "מהם גבולות המדינה?", is_daily_double: false },
-              { points: 400, clue: "חשיבות ההסכמיות באה לידי ביטוי בכך שהיא מאפשרת לקיים עיקרון זה, כי כולם מקבלים את החוקים ואת הצורך בהם.", answer: "מהו שלטון החוק?", is_daily_double: false },
-              { points: 500, clue: "ההסכמיות מאפשרת להגביל את כוח השלטון, משום שהשלטון מקבל את הצורך בשני מנגנונים אלו.", answer: "מהם בחירות וביקורת?", is_daily_double: true }
+              { points: 100, clue: "השגת הסכמה רחבה בין הקבוצות והמגזרים בחברה על כללי המשחק הדמוקרטיים וגבולות המסגרת המשותפת.", answer: "מהי הסכמיות (קונצנזוס)?", is_daily_double: false },
+              { points: 200, clue: "ההסכמה ההכרחית לקיומו של משטר דמוקרטי לפיה תוצאות הבחירות מחייבות ופעולות הממשלה שנבחרה כדין מוכרות כמחייבות.", answer: "מהי קבלת לגיטימיות השלטון?", is_daily_double: false },
+              { points: 300, clue: "התרומה של קיום הסכמיות רחבה ליכולתה של החברה להתמודד עם איומים ומחלוקות ללא התפרקות המסגרת המדינתית.", answer: "מהי יציבות פוליטית וחברתית?", is_daily_double: false },
+              { points: 400, clue: "הסכמת היסוד הבסיסית הנדרשת מכלל האזרחים והמפלגות על הכרה בעקרונות הדמוקרטיה וריבונות החוק כמסגרת מחייבת.", answer: "מהי הסכמה על אופי המשטר וכללי המשחק?", is_daily_double: false },
+              { points: 500, clue: "סוגיה מהותית במדינת ישראל המאופיינת בהיעדר הסכמיות רחבה ובמחלוקת פוליטית עמוקה, לצד סוגיית חוקה ויחסי דת ומדינה.", answer: "מהן סוגיית גבולות הקבע של המדינה?", is_daily_double: false }
+            ]
+          },
+          {
+            name: "יישומים ודילמות",
+            clues: [
+              { points: 100, clue: "ההבחנה בין סובלנות כערך אזרחי מנחה לבין חופש הביטוי כזכות משפטית המעוגנת בחוק.", answer: "מהו ההבדל בין ערך הסובלנות לזכות לחופש הביטוי?", is_daily_double: false },
+              { points: 200, clue: "ההשפעה של הכרה בלגיטימיות של מחאות, עמותות ומפלגות אופוזיציה על מעורבות הציבור בחיים הציבוריים.", answer: "מהו עידוד השתתפות אזרחית?", is_daily_double: false },
+              { points: 300, clue: "המתח המתמיד הקיים בדמוקרטיה בין הצורך לאפשר מגוון רחב של קולות לבין הצורך בלכידות ובמסגרת פעולה מוסכמת.", answer: "מהו המתח בין פלורליזם להסכמיות?", is_daily_double: false },
+              { points: 400, clue: "התפקיד שממלא הפלורליזם בהבטחת יכולתו של המיעוט לפעול באופן חוקי כדי לשנות את יחסי הכוחות במדינה.", answer: "מהי הגנה על זכויות המיעוט?", is_daily_double: false },
+              { points: 500, clue: "העיקרון הדמוקרטי שלפיו חברה פלורליסטית מקיימת מסגרת מדינתית מלכדת תוך שימור וטיפוח הייחוד של כלל הקבוצות המרכיבות אותה.", answer: "מהי אחדות מתוך שוני?", is_daily_double: true }
             ]
           }
         ]
@@ -580,10 +744,35 @@
     let currentTopicIndex = 0;
 
     let teams = [];
+    let customTeamNames = ["קבוצה א'", "קבוצה ב'", "קבוצה ג'", "קבוצה ד'", "קבוצה ה'", "קבוצה ו'"];
+
     let audioEnabled = true;
     let audioCtx = null;
     let currentClue = null;
     let currentCell = null;
+
+    /* ניהול טיימר */
+    let timerInterval = null;
+    let timeLeft = 10;
+
+    function goToRulesScreen() {
+      document.getElementById('splashScreen').style.display = 'none';
+      document.getElementById('startScreen').style.display = 'none';
+      document.getElementById('rulesScreen').style.display = 'flex';
+    }
+
+    function goToLobbyScreen() {
+      document.getElementById('splashScreen').style.display = 'none';
+      document.getElementById('rulesScreen').style.display = 'none';
+      document.getElementById('gameScreen').style.display = 'none';
+      document.getElementById('startScreen').style.display = 'flex';
+      renderTeamInputs();
+      renderLobbyTopics();
+    }
+
+    function showRulesPopup() {
+      alert("תזכורת כללי המשחק:\n1. רק הקבוצה שקיבלה את זכות הדיבור רשאית לענות.\n2. חובה לנסח את התשובה כשאלה (לדוגמה: ראש הממשלה הראשון? > מיהו דוד בן גוריון?).\n3. משבצת 'דאבל' מעניקה ניקוד כפול.");
+    }
 
     function checkAdminMode() {
       const urlParams = new URLSearchParams(window.location.search);
@@ -625,6 +814,11 @@
 
     function playSound(name) {
       if (name === 'click') playTone(587.33, 0.1, "triangle");
+      if (name === 'tick') playTone(700, 0.04, "sine");
+      if (name === 'timeout') {
+        playTone(220, 0.25, "sawtooth");
+        setTimeout(() => playTone(180, 0.4, "sawtooth"), 260);
+      }
       if (name === 'daily') {
         playTone(392, 0.1, "sawtooth");
         setTimeout(() => playTone(523.25, 0.15, "sawtooth"), 100);
@@ -636,6 +830,38 @@
     function toggleAudio() {
       audioEnabled = !audioEnabled;
       document.getElementById('audioBtn').innerText = `צליל: ${audioEnabled ? 'פעיל' : 'כבוי'}`;
+    }
+
+    function renderTeamInputs() {
+      const container = document.getElementById('teamNamesSetup');
+      container.innerHTML = '';
+      if (selectedTeamCount === 1) {
+        container.innerHTML = `
+          <div class="team-input-wrap">
+            <span class="team-input-label">שם המשתתף:</span>
+            <input class="team-input" value="${customTeamNames[0] || 'משתתף אישי'}" oninput="updateTeamName(0, this.value)">
+          </div>
+        `;
+      } else {
+        for (let i = 0; i < selectedTeamCount; i++) {
+          const wrap = document.createElement('div');
+          wrap.className = 'team-input-wrap';
+          wrap.innerHTML = `
+            <span class="team-input-label">שם קבוצה ${i + 1}:</span>
+            <input class="team-input" value="${customTeamNames[i]}" oninput="updateTeamName(${i}, this.value)">
+          `;
+          container.appendChild(wrap);
+        }
+      }
+    }
+
+    function updateTeamName(idx, val) {
+      customTeamNames[idx] = val.trim() || `קבוצה ${idx + 1}`;
+      if (teams[idx]) {
+        teams[idx].name = customTeamNames[idx];
+        const el = document.getElementById(`team-name-${idx}`);
+        if (el) el.innerText = customTeamNames[idx];
+      }
     }
 
     function renderLobbyTopics() {
@@ -655,6 +881,7 @@
       document.querySelectorAll('.team-btn').forEach((btn, idx) => {
         btn.classList.toggle('active', (idx + 1) === count);
       });
+      renderTeamInputs();
     }
 
     function selectBoardSize(size) {
@@ -677,21 +904,20 @@
     }
 
     function goToLobby() {
-      if (confirm("האם ברצונך לצאת למסך הראשי ולבחור נושא מחדש?")) {
+      if (confirm("האם ברצונך לחזור ללובי ולהגדיר נושא או קבוצות מחדש?")) {
+        stopTimer();
         document.getElementById('gameScreen').style.display = 'none';
-        document.getElementById('startScreen').style.display = 'flex';
-        renderLobbyTopics();
+        goToLobbyScreen();
       }
     }
 
     function initTeams() {
       teams = [];
-      const teamLetters = ['א\'', 'ב\'', 'ג\'', 'ד\'', 'ה\'', 'ו\''];
       if (selectedTeamCount === 1) {
-        teams.push({ name: "ניקוד אישי", score: 0 });
+        teams.push({ name: customTeamNames[0] || "ניקוד אישי", score: 0 });
       } else {
         for (let i = 0; i < selectedTeamCount; i++) {
-          teams.push({ name: `קבוצה ${teamLetters[i]}`, score: 0 });
+          teams.push({ name: customTeamNames[i], score: 0 });
         }
       }
     }
@@ -703,7 +929,7 @@
         const card = document.createElement('div');
         card.className = 'team-card';
         card.innerHTML = `
-          <div class="team-name">${t.name}</div>
+          <div class="team-name" id="team-name-${i}" contenteditable="true" onblur="updateTeamName(${i}, this.innerText)" title="לחץ לעריכת שם">${t.name}</div>
           <div class="team-score" id="score-${i}">${t.score}</div>
           <div class="score-btns">
             <button onclick="updateScore(${i}, 100)">+100</button>
@@ -771,6 +997,38 @@
       }
     }
 
+    function startTimer() {
+      stopTimer();
+      timeLeft = 10;
+      const badge = document.getElementById('modalTimer');
+      badge.classList.remove('danger');
+      badge.innerText = timeLeft;
+
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        badge.innerText = timeLeft;
+        
+        if (timeLeft <= 3 && timeLeft > 0) {
+          badge.classList.add('danger');
+          playSound('tick');
+        } else if (timeLeft > 3) {
+          playSound('tick');
+        }
+
+        if (timeLeft <= 0) {
+          stopTimer();
+          playSound('timeout');
+        }
+      }, 1000);
+    }
+
+    function stopTimer() {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+    }
+
     function openClue(clue, catName, cellElement) {
       if (cellElement.classList.contains('used')) return;
       currentClue = clue;
@@ -792,16 +1050,19 @@
         playSound('click');
       }
 
+      startTimer();
       document.getElementById('modal').style.display = 'flex';
     }
 
     function revealAnswer() {
+      stopTimer();
       document.getElementById('modalAns').style.display = 'block';
       document.getElementById('showAnsBtn').style.display = 'none';
       playSound('reveal');
     }
 
     function closeModal() {
+      stopTimer();
       document.getElementById('modal').style.display = 'none';
       if (currentCell) {
         currentCell.classList.add('used');
@@ -864,7 +1125,6 @@
     });
 
     checkAdminMode();
+    renderTeamInputs();
     renderLobbyTopics();
-  </script>
-</body>
-</html>
+  </script></body></html>
